@@ -28,7 +28,7 @@ Field inversion in F_p comes in two families: algebraic (≥ 256 multiplications
 
 | Walk | Exact? | Expected cost vs leader |
 |---|---|---|
-| Leapfrog (leader) made exact | target | ≈1.0× + the price of exactness (to be measured; failures localized in the divide and multiply walks) |
-| Bernstein–Yang hddivsteps, fixed 591 steps (proved bound, [sipa](https://github.com/sipa/safegcd-bounds)) | **proved** | estimated ≈1.5–2×; worst-case step count vs the leader's average-case envelope |
+| Leapfrog (leader) made exact | target | ≈1.0× + the price of exactness: the divide failures are a one-bit width-envelope shortfall, so a proved width table is needed |
+| Bernstein–Yang hddivsteps, fixed 591 steps (proved bound, [sipa](https://github.com/sipa/safegcd-bounds)) | **proved** | ≈1.4× Toffoli (cost model), but ≈1,182 extra history qubits unless decoded; see [exactness experiments](exactness-experiments.md) |
 | andigu divsteps with decoding ([arXiv:2610.22367](https://arxiv.org/abs/2610.22367)) | sampled | ≈5× (4.0M T at 935 Q) |
 | Register-sharing EEA with a proved bound ([arXiv:2607.13816](https://arxiv.org/abs/2607.13816)) | proved | ≈90× |

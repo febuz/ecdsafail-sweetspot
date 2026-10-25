@@ -25,3 +25,6 @@ The next useful complete-circuit experiment must remove long-lived walk state as
 | Reseed the leader with a no-op `X;X` pair (3 variants) | Evaluator fails 18–19/9,024 each time; fresh-input failure ≈0.21%; source cites "19.5 Lambda limit" and `TAIL_NONCE` | Leader is λ≈19.5 approximate + nonce-ground; all savings must be priced against an exact baseline |
 | Prove the leader's 830 `lane3_sigcut` edits (bounded-ANF dataflow) | 375 proved; 455 rest on forward/reverse walk reversibility; leader vs no-post-edit rebuild fail on the identical 8/4,096 inputs; post-edits save 1,334 T | Failures are in the core walks, not the cuts |
 | Failure localization by λ snapshot | 44% divide walk, 0% square, 56% multiply walk (32 failing shots) | Exactness work belongs in the walks |
+| Variant F: real-circuit rail traces, divide leg | Payload invariant P = ±λR holds on all passing shots; 4/4 divide-failing shots have runs of zero rail-width margin vs 2 isolated events in 4,088 passing shots | Divide failures = fitted width envelope one bit short; a proved (hull) width table is the needed proof |
+| Variant F, multiply leg | Builder/stream index misalignment (SQTOP +480, pp_simplify −22) | Unresolved; needs marker alignment |
+| hddivsteps (sipa table: 591 steps) | ≈1.4× Toffoli (model) but ≈1,182 extra history qubits | Not a near-term path under the width cap |

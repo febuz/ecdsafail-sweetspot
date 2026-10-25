@@ -121,7 +121,7 @@ def ranges(indices):
     return out
 
 
-def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
+def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False, capture=None):
     rng = random.Random(seed)
     regs = registers(path)
     fixed = fiat_shamir_inputs(path) if fiat_shamir else None
@@ -161,6 +161,8 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
     distinct_peak, distinct_peak_op = len(classes), 0
     distinct_hist, band_ops, distinct_band = {}, [], 1222
     for index, (kind, _, c2, c1, target, bit, cbit, _) in enumerate(raw_ops(path)):
+        if capture is not None and index in capture:
+            capture[index] = {wire: q.get(wire, 0) for wire in capture[index]}
         if kind == 15:
             stack.append(cond)
             cond &= bits.get(cbit, 0)
