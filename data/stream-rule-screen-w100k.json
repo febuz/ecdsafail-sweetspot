@@ -1,0 +1,11 @@
+{
+  "ops_scanned": 10231150,
+  "toffoli_class_static": {
+    "CCX_uncond": 703896,
+    "CCX_cond": 74979,
+    "CCZ_cond": 179
+  },
+  "rule_hits_toffolis_saved_static": {},
+  "window_ops": 100000,
+  "scope": "static gates in the emitted stream; conditioned gates execute on a fraction of shots"
+}

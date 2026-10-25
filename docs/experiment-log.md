@@ -18,3 +18,5 @@ python3 analysis/carry_plan_screen.py
 ```
 
 The next useful complete-circuit experiment must remove long-lived walk state as well as carry scratch: the leader's active state alone reaches 1,197 qubits. A teleportation routing change cannot erase that logical information. No carry precision or guard bits have been removed in this repository.
+| Local rewrite rules on the leader's final `ops.bin` (10.2M ops) | 0 hits at windows 256 and 100k; only 79 version-checked identical products in the whole stream; 68% of CCX already cleaned by HMR | Excluded as a Toffoli lever; see [programmatic-efficiencies](programmatic-efficiencies.md) |
+| hddivsteps (sipa hull bound 591 for secp256k1) | Leapfrog walk already uses ~490 halvings | Excluded as a direct lever; hull method retained as an envelope-proof tool |

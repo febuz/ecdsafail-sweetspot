@@ -1,0 +1,26 @@
+{
+  "ops_scanned": 10231150,
+  "toffoli_class_static": {
+    "CCX_uncond": 703896,
+    "CCX_cond": 74979,
+    "CCZ_cond": 179
+  },
+  "rule_hits_toffolis_saved_static": {},
+  "window_ops": 256,
+  "scope": "static gates in the emitted stream; conditioned gates execute on a fraction of shots",
+  "exact_repeats": {
+    "ccx": 778875,
+    "identical_product_repeats": {
+      "first_target_live_or_rewritten": 71,
+      "conditioned": 71,
+      "measured_then_recomputed": 8,
+      "unconditioned": 8
+    },
+    "recompute_gap_ops_min_median_max": [
+      40567,
+      324835,
+      506618
+    ],
+    "ccx_targets_cleaned_by_hmr": 526875
+  }
+}
