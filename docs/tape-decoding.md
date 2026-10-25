@@ -23,4 +23,8 @@ Parity cannot decode a forced step: both predecessors 2T′ ∓ B are odd and sa
 
 There is an information bound in the other direction. The whole tape is a function of d, so its *joint* entropy is at most 256 bits, against 649 bits of marginal letter entropy. The leader's ~100-qubit tape growth means it already stores far less than the raw 6 bits per tick. That fits this bound: the remaining branch information sits in the rails.
 
-**Verdict:** algebraic branch decoding **does not apply** to the leapfrog walk. It is available only by switching to a decodable walk (divsteps with a counter), and andigu's own figures (≈4.0M T at 935 Q) price that route at far more than the ≈687 T per qubit a record needs. Candidate 1 is closed. The next candidates are arithmetic relations between parked blocks (in particular the two payload registers, P_i = λ·R_i, which are jointly redundant given λ and the rails) and the square.
+**Verdict:** algebraic branch decoding **does not apply** to the leapfrog walk. It is available only by switching to a decodable walk (divsteps with a counter), and andigu's own figures (≈4.0M T at 935 Q) price that route at far more than the ≈687 T per qubit a record needs. Candidate 1 is closed.
+
+## Payload redundancy (candidate 2), also closed
+
+P_i = λ·R_i makes the two 256-qubit payload registers jointly redundant given λ and the rails, but the relation is *multiplicative*. Rebuilding P_B from P_T on a tick needs a modular multiply or divide, which costs orders of magnitude more than ≈687 T per qubit. The only cheap instance is the park tie (P_T = ±P_S once R = (±1, ±1)), and the leader already exploits it (`leapfrog.rs:4041`). The cheap arithmetic-relation case (block = ±block + c, about 1–2 T per qubit) is additive and does not cover this.

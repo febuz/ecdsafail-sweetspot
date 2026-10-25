@@ -129,7 +129,7 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
         shots = len(fixed)
     full = (1 << shots) - 1
     q, bits = {}, {}
-    expected = []
+    expected, inputs = [], []
     for shot in range(shots):
         while not fixed:
             t, o = mul(rng.randrange(1, N)), mul(rng.randrange(1, N))
@@ -138,6 +138,7 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
         if fixed:
             t, o = fixed[shot]
         expected.append(add(t, o))
+        inputs.append((t, o))
         for reg, value in zip(range(4), (t[0], t[1], o[0], o[1])):
             for index, (kind, wire) in enumerate(regs[reg]):
                 if value >> index & 1:
@@ -150,7 +151,8 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
     last_touch = {}
     cond, stack = full, []
     max_wire = 0
-    ranks, snapshots = {}, {}
+    ranks, snapshots, watch = {}, {}, {}
+    executed, executed_conditioned, exec_bin = {}, [0, 0], 10_000
     classes = {}
     def key(value):
         return min(value, value ^ full)
@@ -173,6 +175,11 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
             before = (q.get(c1, 0), q.get(target, 0))
         else:
             before = ()
+        if kind in (13, 14):
+            executed[index // exec_bin] = executed.get(index // exec_bin, 0) + cond.bit_count()
+            if cond != full:
+                executed_conditioned[0] += cond.bit_count()
+                executed_conditioned[1] += 1
         if kind == 13:
             q[target] = q.get(target, 0) ^ (cond & q.get(c1, 0) & q.get(c2, 0))
             touched = (target,)
@@ -229,6 +236,10 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
                     start[wire] = index
             elif wire in nonzero:
                 nonzero.discard(wire)
+                for point, wires in watch.items():
+                    if wire in wires:
+                        wires.discard(wire)
+                        snapshots[point]["end"][wire] = (index, kind)
         if len(nonzero) > peak:
             peak, peak_op = len(nonzero), index
             segments_at_peak = {wire: (start[wire], last_touch.get(wire, start[wire])) for wire in nonzero}
@@ -238,14 +249,18 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
             live = [q[wire] for wire in nonzero]
             ranks[index] = {"live": len(live), "affine_rank": affine_rank(live, full)}
             snapshots[index] = {"values": {wire: q[wire] for wire in nonzero},
-                                "last_touch": {wire: last_touch.get(wire, -1) for wire in nonzero}}
+                                "last_touch": {wire: last_touch.get(wire, -1) for wire in nonzero},
+                                "start": {wire: start.get(wire, 0) for wire in nonzero}, "end": {}}
+            watch[index] = set(nonzero)
     def read(reg, shot):
         return sum(((q if kind == "q" else bits).get(wire, 0) >> shot & 1) << index
                    for index, (kind, wire) in enumerate(regs[reg]))
-    correct = sum((read(0, shot), read(1, shot)) == expected[shot] for shot in range(shots))
+    failures = [shot for shot in range(shots) if (read(0, shot), read(1, shot)) != expected[shot]]
+    correct = shots - len(failures)
     idle = sorted(peak_op - touch for _, touch in segments_at_peak.values())
     buckets = {f"idle_ge_{limit}": sum(gap >= limit for gap in idle) for limit in (1_000, 10_000, 100_000, 1_000_000)}
-    return {"shots": shots, "shots_correct": correct, "nonzero_wires_at_end": len(nonzero), "declared_width": max_wire + 1, "peak_nonzero_wires": peak, "peak_op": peak_op,
+    return {"shots": shots, "shots_correct": correct,
+            "failing_inputs": [{"target": inputs[shot][0], "offset": inputs[shot][1]} for shot in failures], "nonzero_wires_at_end": len(nonzero), "declared_width": max_wire + 1, "peak_nonzero_wires": peak, "peak_op": peak_op,
             "renaming_slack": max_wire + 1 - peak,
             "peak_distinct_values": distinct_peak, "peak_distinct_op": distinct_peak_op,
             "copy_elimination_ceiling": max_wire + 1 - distinct_peak,
@@ -253,6 +268,9 @@ def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
             "ops_with_distinct_ge_1222_ranges": ranges(band_ops),
             "live_at_peak_idle_since_last_touch": buckets,
             "linear_dependency_at": ranks,
+            "avg_executed_toffoli": sum(executed.values()) / shots,
+            "conditioned_toffoli": {"static": executed_conditioned[1], "avg_executed": executed_conditioned[0] / shots},
+            "executed_toffoli_per_10k_ops": {k: v / shots for k, v in sorted(executed.items())},
             "trace_every": sample_every, "trace": trace,
             "snapshots": snapshots,
             "scope": "classical shot sample; a wire zero on all sampled shots may still be non-zero on rare inputs"}
