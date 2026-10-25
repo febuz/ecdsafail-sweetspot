@@ -1,0 +1,521 @@
+{
+  "field_program": {
+    "modulus": "115792089237316195423570985008687907853269984665640564039457584007908834671663",
+    "nodes": [
+      {
+        "name": "px",
+        "operation": "input",
+        "arguments": [],
+        "origin": "input.px",
+        "classical": false
+      },
+      {
+        "name": "py",
+        "operation": "input",
+        "arguments": [],
+        "origin": "input.py",
+        "classical": false
+      },
+      {
+        "name": "qx",
+        "operation": "input",
+        "arguments": [],
+        "origin": "input.qx",
+        "classical": true
+      },
+      {
+        "name": "qy",
+        "operation": "input",
+        "arguments": [],
+        "origin": "input.qy",
+        "classical": true
+      },
+      {
+        "name": "dx",
+        "operation": "sub",
+        "arguments": [
+          "px",
+          "qx"
+        ],
+        "origin": "affine.dx = px - qx",
+        "classical": false
+      },
+      {
+        "name": "dy",
+        "operation": "sub",
+        "arguments": [
+          "py",
+          "qy"
+        ],
+        "origin": "affine.dy = py - qy",
+        "classical": false
+      },
+      {
+        "name": "inv_dx",
+        "operation": "inverse",
+        "arguments": [
+          "dx"
+        ],
+        "origin": "affine.inv_dx = dx^-1; requires dx != 0",
+        "classical": false
+      },
+      {
+        "name": "slope",
+        "operation": "mul",
+        "arguments": [
+          "dy",
+          "inv_dx"
+        ],
+        "origin": "affine.slope = dy * inv_dx",
+        "classical": false
+      },
+      {
+        "name": "slope2",
+        "operation": "square",
+        "arguments": [
+          "slope"
+        ],
+        "origin": "affine.slope2 = slope^2",
+        "classical": false
+      },
+      {
+        "name": "rx_partial",
+        "operation": "sub",
+        "arguments": [
+          "slope2",
+          "px"
+        ],
+        "origin": "affine.rx_partial = slope^2 - px",
+        "classical": false
+      },
+      {
+        "name": "rx",
+        "operation": "sub",
+        "arguments": [
+          "rx_partial",
+          "qx"
+        ],
+        "origin": "affine.rx = slope^2 - px - qx",
+        "classical": false
+      },
+      {
+        "name": "x_delta",
+        "operation": "sub",
+        "arguments": [
+          "px",
+          "rx"
+        ],
+        "origin": "affine.x_delta = px - rx",
+        "classical": false
+      },
+      {
+        "name": "y_product",
+        "operation": "mul",
+        "arguments": [
+          "slope",
+          "x_delta"
+        ],
+        "origin": "affine.y_product = slope * (px - rx)",
+        "classical": false
+      },
+      {
+        "name": "ry",
+        "operation": "sub",
+        "arguments": [
+          "y_product",
+          "py"
+        ],
+        "origin": "affine.ry = slope * (px - rx) - py",
+        "classical": false
+      }
+    ],
+    "outputs": [
+      "rx",
+      "ry"
+    ],
+    "domain_obligations": [
+      {
+        "node": "inv_dx",
+        "nonzero": "dx"
+      }
+    ],
+    "lowering_status": "symbolic field frontend only; no complete quantum circuit"
+  },
+  "scratch_region": {
+    "stage": "division.partial_product",
+    "reserved_width": 6,
+    "peak_active": 6,
+    "unreleased_scratch": 0,
+    "logical_toffolis": 2,
+    "ordered_toffoli_depth": 2,
+    "ordered_measurement_rounds": 2,
+    "depth_scope": "emitted wire and classical-dependency order; no routing, factory, or cycle timing",
+    "bilinear_rank_lowering": {
+      "direct_partial_product_toffolis": 5,
+      "factored_product_toffolis": 2
+    },
+    "measurement_count": 2,
+    "conditional_phase_gates": 2,
+    "classically_conditioned_gates": 6,
+    "hardware_accounting": {
+      "scenario_4T_per_Toffoli": {
+        "T_magic_states": 8,
+        "assumption": "measurement-assisted decomposition with suitable ancilla and feedforward; costs omitted from Q"
+      },
+      "scenario_7T_per_Toffoli": {
+        "T_magic_states": 14,
+        "assumption": "exact unitary Clifford+T decomposition; not a physical-qubit estimate"
+      },
+      "physical_error_correction_qubits": null,
+      "magic_state_factory_qubits": null,
+      "wall_clock_time_and_energy": null
+    },
+    "gates": [
+      {
+        "id": 0,
+        "kind": "CX",
+        "wires": [
+          1,
+          0
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "compute parity product",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 1,
+        "kind": "CX",
+        "wires": [
+          3,
+          2
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "compute parity product",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 2,
+        "kind": "CCX",
+        "wires": [
+          0,
+          2,
+          5
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "compute parity product",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 3,
+        "kind": "CX",
+        "wires": [
+          3,
+          2
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "compute parity product",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 4,
+        "kind": "CX",
+        "wires": [
+          1,
+          0
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "compute parity product",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 5,
+        "kind": "CX",
+        "wires": [
+          5,
+          4
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "coherent partial-product reader",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 6,
+        "kind": "HMR",
+        "wires": [
+          5
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "X measurement and reset",
+        "condition": null,
+        "monomial_mask": null,
+        "measurement_output": "m0"
+      },
+      {
+        "id": 7,
+        "kind": "CX",
+        "wires": [
+          1,
+          0
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "phase repair in parity basis",
+        "condition": "m0",
+        "monomial_mask": null
+      },
+      {
+        "id": 8,
+        "kind": "CX",
+        "wires": [
+          3,
+          2
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "phase repair in parity basis",
+        "condition": "m0",
+        "monomial_mask": null
+      },
+      {
+        "id": 9,
+        "kind": "CZ",
+        "wires": [
+          0,
+          2
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "phase repair in parity basis",
+        "condition": "m0",
+        "monomial_mask": null
+      },
+      {
+        "id": 10,
+        "kind": "CX",
+        "wires": [
+          3,
+          2
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "phase repair in parity basis",
+        "condition": "m0",
+        "monomial_mask": null
+      },
+      {
+        "id": 11,
+        "kind": "CX",
+        "wires": [
+          1,
+          0
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "purpose": "phase repair in parity basis",
+        "condition": "m0",
+        "monomial_mask": null
+      },
+      {
+        "id": 12,
+        "kind": "CCX",
+        "wires": [
+          0,
+          3,
+          5
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "dy[0]*inv_dx[1]"
+        },
+        "purpose": "compute parity product",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 13,
+        "kind": "CX",
+        "wires": [
+          5,
+          4
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "dy[0]*inv_dx[1]"
+        },
+        "purpose": "coherent partial-product reader",
+        "condition": null,
+        "monomial_mask": null
+      },
+      {
+        "id": 14,
+        "kind": "HMR",
+        "wires": [
+          5
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "dy[0]*inv_dx[1]"
+        },
+        "purpose": "X measurement and reset",
+        "condition": null,
+        "monomial_mask": null,
+        "measurement_output": "m1"
+      },
+      {
+        "id": 15,
+        "kind": "CZ",
+        "wires": [
+          0,
+          3
+        ],
+        "stage": "division.partial_product",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "dy[0]*inv_dx[1]"
+        },
+        "purpose": "phase repair in parity basis",
+        "condition": "m1",
+        "monomial_mask": null
+      }
+    ],
+    "cleanup_certificates": [
+      {
+        "wire": 5,
+        "stage": "division.partial_product",
+        "generation": 0,
+        "basis": "X (H followed by Z readout)",
+        "outcome": "m0",
+        "measured_function_anf": [
+          5,
+          6,
+          9,
+          10
+        ],
+        "bilinear_factor_wires": [
+          [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ]
+        ],
+        "phase_to_cancel": "(-1)^(m * f(data))",
+        "control_versions": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "repair_gate_ids": [
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "cleanup_toffolis": 0,
+        "classical_outcome_bits": 1,
+        "feedforward_latency": "hardware dependent; not estimated",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "(dy[0] XOR dy[1]) * (inv_dx[0] XOR inv_dx[1])"
+        },
+        "releasable": true
+      },
+      {
+        "wire": 5,
+        "stage": "division.partial_product",
+        "generation": 1,
+        "basis": "X (H followed by Z readout)",
+        "outcome": "m1",
+        "measured_function_anf": [
+          9
+        ],
+        "bilinear_factor_wires": [
+          [
+            [
+              0
+            ],
+            [
+              3
+            ]
+          ]
+        ],
+        "phase_to_cancel": "(-1)^(m * f(data))",
+        "control_versions": {
+          "0": 0,
+          "3": 0
+        },
+        "repair_gate_ids": [
+          15
+        ],
+        "cleanup_toffolis": 0,
+        "classical_outcome_bits": 1,
+        "feedforward_latency": "hardware dependent; not estimated",
+        "origin": {
+          "field_node": "slope",
+          "expansion": "dy[0]*inv_dx[1]"
+        },
+        "releasable": true
+      }
+    ],
+    "scope": "partial-product scratch demonstration; no full field multiplication or ECDSA lowering"
+  },
+  "target_achievement": false
+}

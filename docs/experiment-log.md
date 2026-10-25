@@ -9,6 +9,7 @@ All experiments below are local. None is a validated 1,080-qubit / 850,000-Toffo
 | Sparse quadratic measured cleanup | 160 coherent statevector cases, all 512 outcome branches pass | Valid local component; full-circuit integration unresolved |
 | Rec2 phase replay with vented fallback | No positive analytical saving for widths 1–257 and scratch 0–128 | Exclude |
 | Rec2 recursive chunks as adding leaves | No positive analytical saving over the existing cost grammar on the same grid | Exclude |
+| Provenance-tracked bilinear rank lowering | Demonstration compute 5 → 2 CCX; zero-CCX measured cleanup; 132 coherent branches and 512 matrix reconstructions pass | Valid local component; full GF(p) lowering and integration unresolved |
 
 The two cost screens reproduce the recurrence in gnuchev's public SKY-COF source [d7f4e84](https://github.com/Layr-Labs/ecdsafail-challenge/commit/d7f4e842c90df365b5c08a5e25b326aba53894f0), `skycof/adder.rs`, and add one proposed leaf option at a time. Their zero saving is a scoped result for that grammar, not a lower bound on reversible addition or the complete target. Reproduce with:
 

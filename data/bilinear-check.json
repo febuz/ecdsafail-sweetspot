@@ -1,0 +1,13 @@
+{
+  "scope": "bilinear compiler and stage-local recycling only; no complete ECDSA circuit",
+  "coherent_cases": 65,
+  "measurement_branches": 132,
+  "exhaustive_3x3_matrix_reconstructions": 512,
+  "max_statevector_error": 3.925231146709438e-17,
+  "demo_direct_partial_product_compute_toffolis": 5,
+  "demo_factored_compute_toffolis": 2,
+  "demo_measured_cleanup_toffolis": 0,
+  "demo_peak_active": 6,
+  "demo_classical_outcome_bits": 2,
+  "result": "pass"
+}

@@ -8,6 +8,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+plt.rcParams["svg.hashsalt"] = "ecdsafail-sweetspot"
+
 ROOT = Path(__file__).resolve().parents[1]
 snapshot = json.loads((ROOT / "data/public-frontier.json").read_text())
 points = snapshot["pareto_frontier"]
@@ -21,7 +23,7 @@ for point, label, offset in ((snapshot["lowest_t_under_cap"], "1,080 Q / 1.838M 
 ax.set(xlim=(760, 1290), ylim=(0.6, 5.0), xlabel="Peak logical qubits", ylabel="Average executed Toffolis (millions)", title="ECDSA.fail resource frontier — public snapshot, 25 October 2026")
 ax.grid(alpha=0.18)
 ax.legend(loc="upper right", frameon=False, fontsize=9)
-fig.savefig(ROOT / "docs/frontier.svg")
+fig.savefig(ROOT / "docs/frontier.svg", metadata={"Date": None})
 fig.savefig(ROOT / "docs/frontier.png", dpi=160)
 plt.close(fig)
 
@@ -36,5 +38,7 @@ ax.axhline(1050, label="Stretch 1,050", color="#8c667d", linestyle=":")
 ax.set(xlabel="Forward-walk tick", ylabel="Logical qubits", title="Leader's generated forward-walk trace — local build, no new evaluator result", ylim=(1030, 1250))
 ax.grid(alpha=0.18)
 ax.legend(loc="upper left", frameon=False, fontsize=9)
-fig.savefig(ROOT / "docs/peak-trace.svg")
+fig.savefig(ROOT / "docs/peak-trace.svg", metadata={"Date": None})
 fig.savefig(ROOT / "docs/peak-trace.png", dpi=160)
+for path in (ROOT / "docs/frontier.svg", ROOT / "docs/peak-trace.svg"):
+    path.write_text("\n".join(line.rstrip() for line in path.read_text().splitlines()) + "\n")

@@ -6,6 +6,8 @@ The stretch width is 1,050 logical qubits. At 850,000 Toffolis, a circuit of at 
 
 **Status (2026-10-25): target not achieved.** The repository contains a measured resource study, a coherence-safe TRSR design, and an exploratory width patch from the earlier 1,050-qubit search. It does not contain a validated 1,080 × 850,000 circuit or a full ECDSA attack.
 
+Current development focuses on [asymmetric dataflow and algebraic provenance](docs/asymmetric-dataflow.md). The new frontend tracks stage ownership, input versions, field-expression origins, GF(2) bilinear rank lowering, and explicit phase-repair certificates. Parameter-only width experiments are retained as historical evidence and are excluded from claims of architectural contribution.
+
 ## Measured reference points
 
 | Circuit | Peak Q | Average T | Q × T | Evidence |
@@ -44,6 +46,8 @@ This work has no official ECDSA.fail submission and has not been published to th
 The [circuit manifest](circuits/manifest.json) pins complete upstream source trees. Use [benchmark.sh](benchmark.sh) to reproduce them in a fresh directory. [analysis/peak_trace_1234.py](analysis/peak_trace_1234.py) extracts the live-qubit data from the leader's existing trace.
 
 The [sparse recycling component](circuits/sparse_recycle.py) passes all 512 checked coherent measurement branches. Its exact local identity and prerequisites are documented in [TRSR](docs/trsr.md). [The experiment log](docs/experiment-log.md) records tested proposals and exclusions without promoting component tests into a full-circuit result.
+
+The [provenance demonstration](architecture/demo.py) has useful coherent readers and reuses one scratch wire. Rank lowering reduces its preparation from five CCX gates to two; measured cleanup uses zero CCX. The actual emitted gates pass all 132 checked measurement branches. This is a small arithmetic component, with a full GF(p) backend and complete ECDSA integration still required.
 
 The analysis scripts use Python's standard library. Rebuilding the figures with `python3 scripts/plot_resources.py` additionally requires Matplotlib; the rendered SVG and PNG figures are committed.
 
