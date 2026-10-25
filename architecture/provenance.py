@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass
 
 from circuits.sparse_recycle import Quadratic
 from architecture.bilinear import monomials, wire_factors
+from architecture.quadratic import decompose, parity_basis
 
 
 def ordered_depth(gates, charged_kinds):
@@ -38,6 +39,7 @@ class Lease:
     versions: dict[int, int]
     origin: Origin
     factors: tuple | None = None
+    residual_terms: frozenset[int] = frozenset()
     released: bool = False
 
 
@@ -61,6 +63,8 @@ class RegionCompiler:
         self.next_measurement = 0
         self.naive_bilinear_terms = 0
         self.factored_bilinear_products = 0
+        self.naive_quadratic_terms = 0
+        self.factored_quadratic_products = 0
 
     def emit(self, kind, wires, origin, purpose, condition=None, term=None):
         self.gates.append({
@@ -92,11 +96,12 @@ class RegionCompiler:
         return lease
 
     def emit_factor(self, lease, left, right, condition=None):
-        parity_gates = [("CX", (wire, left[0])) for wire in left[1:]] + [("CX", (wire, right[0])) for wire in right[1:]]
+        basis, first, second = parity_basis(left, right)
+        parity_gates = [("CX", wires) for wires in basis]
         purpose = "compute parity product" if condition is None else "phase repair in parity basis"
         for kind, wires in parity_gates:
             self.emit(kind, wires, lease.origin, purpose, condition=condition)
-        self.emit("CCX" if condition is None else "CZ", (left[0], right[0], lease.wire) if condition is None else (left[0], right[0]), lease.origin, purpose, condition=condition)
+        self.emit("CCX" if condition is None else "CZ", (first, second, lease.wire) if condition is None else (first, second), lease.origin, purpose, condition=condition)
         for kind, wires in reversed(parity_gates):
             self.emit(kind, wires, lease.origin, purpose, condition=condition)
 
@@ -110,6 +115,20 @@ class RegionCompiler:
         self.factored_bilinear_products += len(factors)
         for first, second in factors:
             self.emit_factor(lease, first, second)
+        return lease
+
+    def prepare_quadratic(self, function, origin):
+        factors, residual = decompose(function)
+        lease = self.new_lease(function, origin)
+        lease.factors = tuple((tuple(bit for bit in range(left.bit_length()) if left >> bit & 1), tuple(bit for bit in range(right.bit_length()) if right >> bit & 1)) for left, right in factors)
+        lease.residual_terms = residual
+        self.naive_quadratic_terms += sum(term.bit_count() == 2 for term in function.terms)
+        self.factored_quadratic_products += len(factors)
+        for first, second in lease.factors:
+            self.emit_factor(lease, first, second)
+        for term in sorted(residual):
+            bits = tuple(bit for bit in range(term.bit_length()) if term >> bit & 1)
+            self.emit("X" if not bits else "CX", (*bits, lease.wire), origin, "linear residue", term=term)
         return lease
 
     def xor_into(self, lease, target, stage):
@@ -141,6 +160,9 @@ class RegionCompiler:
         if lease.factors is not None:
             for first, second in lease.factors:
                 self.emit_factor(lease, first, second, condition=measurement)
+            for term in sorted(lease.residual_terms):
+                bits = tuple(bit for bit in range(term.bit_length()) if term >> bit & 1)
+                self.emit("NEG" if not bits else "Z", bits, lease.origin, "linear phase residue", condition=measurement, term=term)
         else:
             for term in sorted(lease.function.terms):
                 bits = tuple(bit for bit in range(term.bit_length()) if term >> bit & 1)
@@ -150,6 +172,7 @@ class RegionCompiler:
             "basis": "X (H followed by Z readout)", "outcome": measurement,
             "measured_function_anf": sorted(lease.function.terms),
             "bilinear_factor_wires": lease.factors,
+            "linear_residue_anf": sorted(lease.residual_terms),
             "phase_to_cancel": "(-1)^(m * f(data))", "control_versions": lease.versions,
             "repair_gate_ids": list(range(start + 1, len(self.gates))),
             "cleanup_toffolis": 0, "classical_outcome_bits": 1,
@@ -172,6 +195,7 @@ class RegionCompiler:
             "ordered_measurement_rounds": ordered_depth(self.gates, {"HMR"}),
             "depth_scope": "emitted wire and classical-dependency order; no routing, factory, or cycle timing",
             "bilinear_rank_lowering": {"direct_partial_product_toffolis": self.naive_bilinear_terms, "factored_product_toffolis": self.factored_bilinear_products},
+            "quadratic_rank_lowering": {"direct_quadratic_toffolis": self.naive_quadratic_terms, "factored_product_toffolis": self.factored_quadratic_products},
             "measurement_count": self.next_measurement,
             "conditional_phase_gates": sum(gate["condition"] is not None and gate["kind"] in ("NEG", "Z", "CZ") for gate in self.gates),
             "classically_conditioned_gates": sum(gate["condition"] is not None for gate in self.gates),

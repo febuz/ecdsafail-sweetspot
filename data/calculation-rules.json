@@ -1,0 +1,217 @@
+{
+  "scope": "exact local rules and fixtures; no full secp256k1 improvement measured",
+  "rules": {
+    "inverse_pair": {
+      "exact_basis_states_checked": 8,
+      "coherent_max_error": 0.0,
+      "before": {
+        "toffolis": 2,
+        "cnot": 0,
+        "ordered_toffoli_depth": 2,
+        "declared_qubits": 3
+      },
+      "after": {
+        "toffolis": 0,
+        "cnot": 0,
+        "ordered_toffoli_depth": 0,
+        "declared_qubits": 3
+      },
+      "certificate": {
+        "rule": "inverse_pair",
+        "identity": "CCX^2 = I",
+        "source_gate_ids": [
+          0,
+          1
+        ],
+        "source_origins": [
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          },
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          }
+        ],
+        "preconditions": [
+          "unconditional gates",
+          "same stage",
+          "valid distinct CCX wires",
+          "adjacent matched window"
+        ],
+        "clean_target_required": false,
+        "toffolis_removed": 2
+      }
+    },
+    "shared_control_factor": {
+      "exact_basis_states_checked": 16,
+      "coherent_max_error": 0.0,
+      "before": {
+        "toffolis": 2,
+        "cnot": 0,
+        "ordered_toffoli_depth": 2,
+        "declared_qubits": 4
+      },
+      "after": {
+        "toffolis": 1,
+        "cnot": 2,
+        "ordered_toffoli_depth": 1,
+        "declared_qubits": 4
+      },
+      "certificate": {
+        "rule": "shared_control_factor",
+        "identity": "ab XOR ac = a(b XOR c)",
+        "source_gate_ids": [
+          0,
+          1
+        ],
+        "source_origins": [
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          },
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          }
+        ],
+        "preconditions": [
+          "unconditional gates",
+          "same stage",
+          "valid distinct CCX wires",
+          "adjacent matched window"
+        ],
+        "clean_target_required": false,
+        "toffolis_removed": 1
+      }
+    },
+    "shared_product_fanout": {
+      "exact_basis_states_checked": 16,
+      "coherent_max_error": 0.0,
+      "before": {
+        "toffolis": 2,
+        "cnot": 0,
+        "ordered_toffoli_depth": 2,
+        "declared_qubits": 4
+      },
+      "after": {
+        "toffolis": 1,
+        "cnot": 2,
+        "ordered_toffoli_depth": 1,
+        "declared_qubits": 4
+      },
+      "certificate": {
+        "rule": "shared_product_fanout",
+        "identity": "Two identical products on two arbitrary targets use one CCX and two CX",
+        "source_gate_ids": [
+          0,
+          1
+        ],
+        "source_origins": [
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          },
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          }
+        ],
+        "preconditions": [
+          "unconditional gates",
+          "same stage",
+          "valid distinct CCX wires",
+          "adjacent matched window"
+        ],
+        "clean_target_required": false,
+        "toffolis_removed": 1
+      }
+    },
+    "phase_conjugation": {
+      "exact_basis_states_checked": 8,
+      "coherent_max_error": 0.0,
+      "before": {
+        "toffolis": 2,
+        "cnot": 0,
+        "ordered_toffoli_depth": 2,
+        "declared_qubits": 3
+      },
+      "after": {
+        "toffolis": 0,
+        "cnot": 0,
+        "ordered_toffoli_depth": 0,
+        "declared_qubits": 3
+      },
+      "certificate": {
+        "rule": "phase_conjugation",
+        "identity": "CCX(a,b,t);Z(t);CCX(a,b,t) = Z(t);CZ(a,b)",
+        "source_gate_ids": [
+          0,
+          1,
+          2
+        ],
+        "source_origins": [
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          },
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          },
+          {
+            "field_node": "fixture",
+            "expansion": "local rule fixture"
+          }
+        ],
+        "preconditions": [
+          "unconditional gates",
+          "same stage",
+          "valid distinct CCX wires",
+          "adjacent matched window"
+        ],
+        "clean_target_required": false,
+        "toffolis_removed": 2
+      }
+    },
+    "two_bit_polynomial_karatsuba": {
+      "exact_basis_states_checked": 128,
+      "coherent_max_error": 0.0,
+      "before": {
+        "toffolis": 4,
+        "cnot": 0,
+        "ordered_toffoli_depth": 4,
+        "declared_qubits": 7
+      },
+      "after": {
+        "toffolis": 3,
+        "cnot": 8,
+        "ordered_toffoli_depth": 2,
+        "declared_qubits": 7
+      }
+    },
+    "quadratic_parity_factorization": {
+      "coherent_cases": 146,
+      "measurement_branches": 292,
+      "max_statevector_error": 7.850462293418876e-17,
+      "exact_anf_reconstructions": 2048,
+      "examples": {
+        "majority_carry": {
+          "direct_compute_toffolis": 3,
+          "optimized_compute_toffolis": 1,
+          "cleanup_toffolis": 0,
+          "peak_active": 5,
+          "measurement_count": 1
+        },
+        "four_bit_quadratic_clique": {
+          "direct_compute_toffolis": 6,
+          "optimized_compute_toffolis": 2,
+          "cleanup_toffolis": 0,
+          "peak_active": 6,
+          "measurement_count": 1
+        }
+      }
+    }
+  },
+  "result": "pass"
+}
