@@ -23,3 +23,5 @@ The next useful complete-circuit experiment must remove long-lived walk state as
 | Algebraic branch decoding of the leapfrog tape (andigu-style) | 99.3–100% of letters ambiguous under the width envelope; 5.75 bits/tick of fresh entropy | Does not apply to leapfrog; closed |
 | Drop one payload register (P_i = λ·R_i) | Multiplicative relation; rebuilding needs a modular multiply/divide per tick; park tie already used by the leader | Closed |
 | Reseed the leader with a no-op `X;X` pair (3 variants) | Evaluator fails 18–19/9,024 each time; fresh-input failure ≈0.21%; source cites "19.5 Lambda limit" and `TAIL_NONCE` | Leader is λ≈19.5 approximate + nonce-ground; all savings must be priced against an exact baseline |
+| Prove the leader's 830 `lane3_sigcut` edits (bounded-ANF dataflow) | 375 proved; 455 rest on forward/reverse walk reversibility; leader vs no-post-edit rebuild fail on the identical 8/4,096 inputs; post-edits save 1,334 T | Failures are in the core walks, not the cuts |
+| Failure localization by λ snapshot | 44% divide walk, 0% square, 56% multiply walk (32 failing shots) | Exactness work belongs in the walks |

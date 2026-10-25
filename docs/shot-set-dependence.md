@@ -23,7 +23,7 @@ At λ = 19.5, a single build passes with probability e^−19.5 ≈ 3×10⁻⁹. 
 
 ## Where the failures are *not*
 
-All 17 failing fresh inputs have ordinary geometry: no y₁ = ±y₂ case, and ≤122 walk ticks in the [`leapfrog_decode.py`](../research/leapfrog_decode.py) model. None exceeds the per-tick 99.9% rail-width quantile, against 0.9% of random walks. The failures therefore come from the other lambda-priced approximations (truncated compare and erase windows, fold guards, skipped batch routes), not from the walk-length envelope.
+All 17 failing fresh inputs have ordinary geometry: no y₁ = ±y₂ case, and ≤122 walk ticks in the [`leapfrog_decode.py`](../research/leapfrog_decode.py) model. None exceeds the per-tick 99.9% rail-width quantile, against 0.9% of random walks. The failures are not from the walk-length envelope, and not from the stream-bound post-edits either: a rebuild without them fails on exactly the same inputs ([proofs](proofs.md)). Localization puts them 44% in the divide walk, 0% in the square and 56% in the multiply walk.
 
 ## Consequences for this repository
 
