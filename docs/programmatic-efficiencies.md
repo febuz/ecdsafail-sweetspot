@@ -17,11 +17,11 @@ Stream: the leader's final `ops.bin`, rebuilt locally with its unmodified `build
 | Rule hits, window 256 ops ([`data/stream-rule-screen-w256.json`](../data/stream-rule-screen-w256.json)) | **0** |
 | Rule hits, window 100,000 ops ([`data/stream-rule-screen-w100k.json`](../data/stream-rule-screen-w100k.json)) | **0** |
 | Same control pair recurring within 64 Toffolis, commutation **ignored** (loose upper bound) | 13,871 |
-| …same pair with *both controls unwritten in between* (identical product) | **79** (71 conditioned, 8 measured then recomputed 40k–500k ops later) |
-| CCX targets cleaned by HMR measurement (Gidney measurement-based AND uncompute) | 526,875 of 778,875 (68%) |
+| …same pair with *both controls unwritten in between*: syntactic identical product, a lower bound because write-then-restore is counted as a change | **79** (71 conditioned, 8 measured then recomputed 40k–500k ops later) |
+| CCX targets later cleaned by HMR (consistent with measurement-based AND uncompute) | 526,875 of 778,875 (68%) |
 | Leader's own `pp_simplify product/affine/quadratic/truth` passes | 22 / 0 / 0 / 0 ops removed |
 
-**Verdict: does not fire.** The commutation-ignoring count shrinks from 13,871 to 79 once write versions are checked. Most repeated control pairs read *different values* of the same wires, so they are not common subexpressions. The 79 true repeats cap the possible saving at ≈0.01% of the Toffolis. The 8 measured-and-recomputed products would have to stay live across 40k–500k ops through the peak region, which trades the scarce resource (width) for a negligible Toffoli gain. Zero-Toffoli measured cleanup, the core of the TRSR "recycling" idea, is **already the leader's default** for 68% of its Toffolis. It is not a new lever.
+**Verdict: does not fire.** Reusable identical products lie between **79** (syntactic versioning) and **13,871** (same controls within 64 Toffolis, commutation ignored). The upper end is ≈1.8% of the Toffolis, while 850k at 1,080 Q needs roughly a 54% cut from the under-cap baseline. The 8 measured-and-recomputed products would have to stay live across 40k–500k ops through the peak region, which trades the scarce resource (width) for a negligible Toffoli gain. HMR cleanup of Toffoli targets, the core of the TRSR "recycling" idea, already covers 68% of the leader's Toffolis. It is not a new lever.
 
 ## 2. Source-by-source transfer map
 
@@ -33,7 +33,7 @@ Stream: the leader's final `ops.bin`, rebuilt locally with its unmodified `build
 | [google-deepmind/alphatensor_quantum](https://github.com/google-deepmind/alphatensor_quantum) `3def81a` | Symmetric-tensor (Waring) decomposition of the phase-polynomial signature tensor; Toffoli and CS gadgets | **T-count** | **Limited transfer.** A Toffoli gadget costs 2 T in its accounting. The challenge counts a CCX as one unit whatever its T cost, so T savings do not register. The cubic-term rank idea transfers only where outputs are pure phases (CCZ blocks), and the stream screen measures those. |
 | [quantumlib/Qualtran](https://github.com/quantumlib/Qualtran) `638777f` `ecc/ec_add.py` | Litinski 2023 (arXiv:2306.08585) 6-step affine add with Kaliski inversion | Toffolis at ~2n+O(1) width | **Reference design, not directly comparable.** Litinski adds a *classical* point (lookup-loaded constants) inside a windowed Shor loop; the challenge adds two quantum points. Its step decomposition remains a useful independent audit of which products must be live at once. |
 | [sipa/safegcd-bounds](https://github.com/sipa/safegcd-bounds) `06abb7f` | Convex-hull worst-case iteration bounds for divsteps / hddivsteps | Iteration count (Toffolis *and* history width) | **See §3.** The leader does not use divsteps, but the hull method is the tool to prove or tighten its empirical tick envelope. |
-| [andigu/uncompute](https://github.com/andigu/uncompute) `64b5a13` `tasks/modinv-point-add` | Benchmarked uncomputation tasks incl. modular-inverse point add | Ancilla cleanup | **Not screened (not fetched: GitHub API outage mid-session).** Worth a follow-up because it targets the same primitive. |
+| [andigu/uncompute](https://github.com/andigu/uncompute) `64b5a13` `tasks/modinv-point-add/circuits/divsteps` (arXiv:2610.22367) | *Algebraic branch decoding*: parity and sign recover ~⅔ of the divstep branch decisions, and most of the rest are decoded from the surviving arithmetic state. Fresh walks store 21.2 bits on average in a reserved 60-bit stack, against 198 qubits of raw history per walk. The walk runs 533 steps against a proved 590 bound, with the tail charged to a failure budget | **History width** | **Most relevant width technique found.** Its own harness certifies 4,006,673 T at 935 Q (`circuit.py`) and 3,637,655 T at 1,031 Q (`fill.py`). That is a much worse product than the leader, and the accounting is not the ecdsa.fail evaluator's. The decoding idea itself transfers: the leader stores a six-qubit letter per leapfrog tick, and decoding letters from rail state instead of storing them is a candidate for removing the walk's ~100-qubit history growth. Unmeasured. |
 | GF(2) bilinear / quadratic rank lowering ([`bilinear.py`](../architecture/bilinear.py), [`quadratic.py`](../architecture/quadratic.py)), two-bit Karatsuba ([`rewrites.py`](../architecture/rewrites.py)) | XOR-accumulated partial products | Toffolis | **Applies only where outputs are true parities** (phase oracles, HMR phase repair, XOR-accumulated tags). secp256k1 field arithmetic is GF(p) with carries. Integer Karatsuba also needs extra scratch, which works against the binding constraint (width). |
 
 ## 3. Iteration-count check (safegcd bounds vs. leapfrog)
@@ -46,17 +46,17 @@ For the secp256k1 prime (log₂ p ≈ 256.0), the proven worst-case iteration bo
 | divsteps, convex-hull bound (g ≤ f ≤ M) | 724 | sipa/safegcd-bounds |
 | **hddivsteps** (δ starts at ½), convex-hull bound | **591** | sipa/safegcd-bounds |
 
-The leader does **not** use divsteps. Its `leapfrog.rs` walk runs ~122–136 ticks, depending on the lever. Each tick does four add-halve steps plus a 0–3-bit barrel strip, so it uses at least ~490 halvings, already below the 591 hddivstep bound. The tick count and the shrinking rail widths (`leapfrog_data/a2_R122_steps.txt`) come from an **empirical** envelope ("rsim peel refit … nfit=2,000,000"), not a proof.
+The leader does **not** use divsteps. Its `leapfrog.rs` walk runs ~122–136 ticks, depending on the lever. Each tick does four add-halve steps plus a 0–3-bit barrel strip (4–7 halvings), so 122 ticks span ~490–850 halvings. The tick count and the shrinking rail widths (`leapfrog_data/a2_R122_steps.txt`) come from an **empirical** envelope ("rsim peel refit … nfit=2,000,000"), not a proof.
 
 Consequences:
 
-1. Switching to hddivsteps would *not* reduce the iteration count. **Excluded** as a direct Toffoli lever.
+1. **Not comparable as stated; unresolved.** 591 is a proven worst case, but the score uses *average* executed Toffolis. The cost per halving also differs between the two step types. A fair comparison needs the average hddivsteps to reach g=0 and the Toffolis per step on each side.
 2. The hull method is linear and works per branch, so it could *prove* a worst-case tick count and rail-width envelope for the leapfrog step's four branches. The current envelope is validated only on random samples (the evaluator runs 9,024 shots). A proof would either certify the envelope or exhibit a failing input. **Whether the envelope could shrink further is unknown** until that runs. This is a correctness-and-tightness tool, not a measured saving.
 
 ## 4. What this changes in the plan
 
 - **Stop adding peephole and CSE rules.** The leader's stream is locally optimal for every pattern in `architecture/rewrites.py`, both for products and for cleanup. The rulebook remains useful as a *verifier* for new code, not as a source of savings.
 - **The remaining levers are algorithmic, and both act on width:**
-  1. *Live-set breakdown at the `Y16_PEAK` sites* (ledger experiment 1). Tick 1 already holds 1,097 active qubits, above the 1,080 cap. History pebbling (caterpillar-style, Knill's optimal chain DP) can address only the ~100-qubit growth across the walk. The baseline needs a different payload/rail encoding.
+  1. *Live-set breakdown at the `Y16_PEAK` sites* (ledger experiment 1). Tick 1 already holds 1,097 active qubits, above the 1,080 cap. History pebbling (caterpillar-style) or algebraic branch decoding (andigu, above) can address only the ~100-qubit growth across the walk. The baseline needs a different payload/rail encoding.
   2. *Hull-proved leapfrog envelope* (§3). A proven worst-case rail-width schedule could either certify the current envelope or show where rails can narrow. Narrower rails save qubits and Toffolis together.
 - Every future claim must come from a full rebuild plus the stream screen, reported in the evaluator's accounting.
