@@ -1,0 +1,14 @@
+{
+  "source_commit": "d7f4e842c90df365b5c08a5e25b326aba53894f0",
+  "scope": "analytical Rec2 cost-table extensions; no quantum lower bound or circuit validity claim",
+  "maximum_word_width": 257,
+  "scratch_range": [
+    0,
+    128
+  ],
+  "maximum_expected_toffoli_saving": {
+    "vented_phase": 0,
+    "chunk_leaves": 0
+  },
+  "conclusion": "No positive saving in the screened grammar; exclude these proposed changes"
+}

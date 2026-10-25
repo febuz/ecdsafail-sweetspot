@@ -1,0 +1,13 @@
+{
+  "scope": "local quadratic-scratch identity; not a full ECDSA circuit",
+  "coherent_cases": 160,
+  "all_measurement_branches_checked": 512,
+  "max_statevector_error": 5.551115123125783e-17,
+  "raw_z_measurement_negative_control_fidelity": 0.4999999999999999,
+  "missing_phase_repair_negative_control_fidelity": 0.0,
+  "example_compute_toffolis": 4,
+  "example_coherent_uncompute_toffolis": 4,
+  "example_measured_cleanup_toffolis": 0,
+  "data_controls_must_remain_available": true,
+  "result": "pass"
+}

@@ -26,6 +26,8 @@ Selected forward-walk lines from the builder's `Y15_ROOM` trace:
 
 `Y16_PEAK` reaches 1,234 repeatedly starting at tick 43. At tick 115, the active state alone exceeds the new 1,080-qubit cap by 117; useful carry scratch requires still more room. This rules out a one-site peak shave as the complete width solution. It does not establish a lower bound on what a redesigned algorithm could do.
 
+![Leader forward-walk qubit trace](peak-trace.svg)
+
 ## Exact budget
 
 Target `Q ≤ 1,080`, `T ≤ 850,000` gives `Q × T ≤ 918,000,000` at the full cap, 2,718,754 above the current official score of 915,281,246. A record at exactly 1,080 qubits requires `T ≤ 847,482`. Starting from the 1,234-qubit leader, the total Toffoli allowance increases by only `850,000 − 741,719 = 108,281` while peak width must fall by 154. The simple 1,050-qubit width experiment in this repository is roughly 1.967 million *expected* Toffolis, leaving more than 1.11 million to cut before the target.

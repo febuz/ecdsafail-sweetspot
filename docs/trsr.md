@@ -29,3 +29,13 @@ Bell-pair teleportation can route a logical state across distant fault-tolerant 
 5. Measure `Q`, average executed `T`, Toffoli depth, Clifford count, measurement count, and a physical-routing estimate separately. Run the official evaluator before claiming a result.
 
 The benchmark's task is one coherent secp256k1 point addition with a classical addend, so a complete Shor resource claim needs additional windowing and full-algorithm accounting. See the [ECDSA.fail paper](https://arxiv.org/abs/2609.09582).
+
+## Executable local component
+
+[circuits/sparse_recycle.py](../circuits/sparse_recycle.py) compiles quadratic Boolean scratch functions into compute gates and a sparse Z/CZ phase repair for each X-measurement outcome. The cleanup uses zero Toffolis when the defining data controls remain live. Its self-check exhausts all 128 quadratic Boolean functions on three inputs and also checks 32 multi-scratch cases, each on a full-support complex superposition. All 512 measurement branches pass with maximum statevector error below `6e-17`. The direct Z-measurement and omitted-phase negative controls fail as expected. [Recorded output](../data/sparse-recycle-check.json).
+
+```bash
+python3 circuits/sparse_recycle.py --self-check
+```
+
+This implements established measurement-based uncomputation, including the temporary-AND principle in [Gidney, Halving the cost of quantum addition (2018)](https://quantum-journal.org/papers/q-2018-06-18-74/). No novelty is claimed for this identity. [Jeon, Huang and Cai (2026)](https://arxiv.org/abs/2609.31605) gives a recent algebraic treatment of measurement-induced phases and correction conditions. The unresolved task here is finding additional legal cleanup sites in the full point-addition circuit that survive its existing optimizations.

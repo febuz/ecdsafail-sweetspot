@@ -2,6 +2,8 @@
 
 Research toward a secp256k1 point-addition circuit with **at most 1,080 peak logical qubits** and **at most 850,000 average executed Toffoli gates**. At the full width cap, the target scores 918,000,000 on ECDSA.fail's `Q × T` metric. To beat the current 915,281,246 record at exactly 1,080 qubits, it needs **at most 847,482 Toffolis**.
 
+The stretch width is 1,050 logical qubits. At 850,000 Toffolis, a circuit of at most 1,076 qubits would beat the snapshot's global product record.
+
 **Status (2026-10-25): target not achieved.** The repository contains a measured resource study, a coherence-safe TRSR design, and an exploratory width patch from the earlier 1,050-qubit search. It does not contain a validated 1,080 × 850,000 circuit or a full ECDSA attack.
 
 ## Measured reference points
@@ -14,6 +16,8 @@ Research toward a secp256k1 point-addition circuit with **at most 1,080 peak log
 | Lilypad 999-qubit reference | 999 | 1,998,018 | 1,996,019,982 | [official submission](https://api.ecdsa.fail/api/submissions/aee17ce0-0cbb-400f-bd42-0ebe29799799) |
 
 The first line is globally promoted. The under-cap records have official measured metrics but were not promoted because their scalar scores did not beat the global leader. They passed the fixed 9,024-shot evaluator; that is not a proof of correctness on every possible input or measurement branch. These rows are a snapshot, not a live leaderboard.
+
+![Official resource frontier and unachieved research target](docs/frontier.svg)
 
 Refresh the public API comparison with:
 
@@ -38,6 +42,10 @@ The [challenge repository](https://github.com/Layr-Labs/ecdsafail-challenge) def
 This work has no official ECDSA.fail submission and has not been published to the challenge leaderboard.
 
 The [circuit manifest](circuits/manifest.json) pins complete upstream source trees. Use [benchmark.sh](benchmark.sh) to reproduce them in a fresh directory. [analysis/peak_trace_1234.py](analysis/peak_trace_1234.py) extracts the live-qubit data from the leader's existing trace.
+
+The [sparse recycling component](circuits/sparse_recycle.py) passes all 512 checked coherent measurement branches. Its exact local identity and prerequisites are documented in [TRSR](docs/trsr.md). [The experiment log](docs/experiment-log.md) records tested proposals and exclusions without promoting component tests into a full-circuit result.
+
+The analysis scripts use Python's standard library. Rebuilding the figures with `python3 scripts/plot_resources.py` additionally requires Matplotlib; the rendered SVG and PNG figures are committed.
 
 ## Attribution
 

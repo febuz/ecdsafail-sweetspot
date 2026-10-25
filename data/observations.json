@@ -1,7 +1,7 @@
 {
   "as_of_utc": "2026-10-25T09:33:59Z",
   "benchmark_id": "1ffb695a-309b-46b6-a728-2f97d8c7be74",
-  "target": {"max_logical_qubits": 1080, "max_average_toffoli": 850000, "max_product_at_cap": 918000000, "max_toffoli_for_product_record_at_cap": 847482},
+  "target": {"max_logical_qubits": 1080, "stretch_logical_qubits": 1050, "max_average_toffoli": 850000, "max_product_at_cap": 918000000, "max_toffoli_for_product_record_at_cap": 847482},
   "official_reference_points": [
     {"submission_id": "da097c38-3db4-4d6e-926b-98cec8026e98", "peak_qubits": 1234, "average_toffoli": 741719, "product": 915281246, "role": "global score leader"},
     {"submission_id": "07112bcc-26c3-449a-8f0a-b998ca92aa91", "peak_qubits": 1080, "average_toffoli": 1837665, "product": 1984678200, "role": "lowest T under 1080 in snapshot"},
