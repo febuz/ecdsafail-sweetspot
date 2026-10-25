@@ -29,7 +29,7 @@ Two more corrections:
 - `mod.rs:494` `clear_process_env()` wipes the whole process environment at start-up. Any variant set through environment variables is therefore a no-op. That explains why variants A and C were byte-identical to the leader.
 - The later entries of `install_recipe` override earlier ones: `LF_MERGED_WIN` is 54, not 56.
 
-## The failure model: every observed failure is a walk failure (validated)
+## The failure model: the walk explains ~83% of failures (validated)
 
 [`research/lf_tail`](../research/lf_tail) is a Rust port of `a2_ref::walk_t0`, about 150k walks/s. For each tick it records the signed width each value needs and compares it with the fitted table:
 - W: the rails;
@@ -45,12 +45,28 @@ Each point add runs two walks: the divide on d = x₂ − x₁ and the multiply 
 |---|---|---|---|---|---|
 | variant F, seed 21, 4,096 fresh inputs | 8 | 8 (4 divide, 4 multiply) | 8 | 0 | 0 |
 | leader stream, the evaluator's 9,024 Fiat-Shamir inputs | 0 | 0 | 0 | 0 | 0 |
+| variant F, seeds 101–104, 4 × 4,096 fresh inputs | 28 | 22 | 22 | 0 | 6 |
 | widened table (below), 9,024 evaluator inputs | 13 | 11 | 11 | 0 | 2 |
 
+The leader's evaluator row is not evidence about the rate, because that stream was nonce-ground to pass exactly that shot set. It only shows that the model has no false positives there.
+
+**Over the 20,480 fresh shots (seeds 21, 101–104):** 36 real failures, 30 flagged by the walk model, 0 false positives.
+- **Measured per-shot rate:** 1.76·10⁻³, so λ ≈ **15.9** on 9,024 shots.
+- **Split:** the walk accounts for ≈ **13.2**; non-walk failures account for ≈ **2.6** (6 shots, Poisson error large).
+- **Non-walk source:** consistent with the payload's documented λ knobs (`LF_MERGED_WIN` 54, `LF_CELL_FOLD_MIN`, approximate chunk compares, the T3P1 majority pack).
+
 **Consequences:**
-- **The multiply leg is classified** without marker alignment. Its failures are the same walk failure, run on d′ = x₂ − x₃.
-- **The two sources split in half.** On 10⁸ sampled walks the failure rate is **8.0·10⁻⁴ per leg**: 4.2·10⁻⁴ from width overflow and 3.8·10⁻⁴ from walks not parked within 122 ticks. 52 of 10⁸ walks are still unparked at tick 130, and 1 at tick 135.
-- **The leader's λ follows directly:** λ_walk ≈ 2 · 9,024 · 8.0·10⁻⁴ ≈ **14.5**. A given stream passes all 9,024 shots with probability e^−14.5 ≈ 5·10⁻⁷, so the baked `TAIL_NONCE` reflects on the order of 10⁶ tries.
+- **The multiply leg is classified** without marker alignment. Its walk failures are the same walk failure, run on d′ = x₂ − x₃.
+- **The two failure types overlap.** In 10⁸ sampled walks the walk-failure rate is **8.0·10⁻⁴ per leg**. The `walk()` semantics give 122 ticks with the special last tick:
+
+  | Failure type | Rate per leg |
+  |---|---|
+  | width overflow only | 3.1·10⁻⁴ |
+  | not parked only | 1.7·10⁻⁴ |
+  | both | 3.1·10⁻⁴ |
+
+  On the extended walk (no special last tick), 38,283 walks park after tick 122, 45 after tick 130 and none after tick 132.
+- **The leader's λ:** the sampled walk rate predicts λ_walk ≈ 2 · 9,024 · 8.0·10⁻⁴ ≈ 14.5. The measured total is ≈ 15.9. A given stream passes all 9,024 shots with probability e^−15.9 ≈ 10⁻⁷, so the baked `TAIL_NONCE` reflects on the order of 10⁷ tries.
 - **The two "real only" failures** in the widened build are clean in the walk model under every convention. They come from a second source that the widening itself switches on: the payload cells lose the wires the wider rails take and fall back to more approximate chunk-boundary compares. On the unmodified builds this source was 0 of 13,120 shots.
 
 ## Why the convex-hull proof is withdrawn
@@ -66,7 +82,9 @@ A hull propagated through the branch maps therefore never contracts the max-norm
 
 **Measured price.** Variant F with the table +1 bit on ticks 2..115 builds only with the walk cap raised to 1,236. Ticks 0, 1 and 116+ are pinned by RT0 and N2 asserts. Result: **+2,660 T** (743,140 → 745,800, ≈ **23 T per bit-tick**) and **+2 Q**. An extra tick costs ≈ 4.6k T over both legs (from the per-tick Toffoli counts between variant F's tick markers; estimate).
 
-**Cheapest plans** ([`widen.py`](../research/lf_tail/widen.py), greedy over 80,107 failing walks out of 10⁸):
+**Cheapest plans** ([`widen.py`](../research/lf_tail/widen.py), greedy over 80,107 failing walks out of 10⁸). Limitations:
+- **In-sample.** The plan is fitted and scored on the same walks, so the 10⁻⁶ and 10⁻⁷ rows (100 and 10 walks left) are optimistic.
+- **Extra ticks.** Plans with more than 122 ticks reuse the extended walk and price the extra ticks at ≈4.6k T each, with no width table past tick 122.
 
 | Target per leg | λ on 9,024 shots | Ticks | Extra bit-ticks | ≈ T | Max extra bits on a tick |
 |---|---|---|---|---|---|
@@ -76,9 +94,9 @@ A hull propagated through the branch maps therefore never contracts the max-norm
 | 1·10⁻⁶ | 0.018 | 129 | 1,609 | +69k (+9.3%) | ~13 |
 | 1·10⁻⁷ | 0.002 | 132 | 1,669 | +84k (+11.4%) | ~13 |
 
-The T column leaves out qubits. Rails widened by k bits on ticks where the walk sits at the cap cost up to 2k Q, unless the payload gives the room back, and that is exactly what switches on the payload's approximate compares. So the cost in score is higher still.
+The T column leaves out qubits. Rails widened by k bits on ticks where the walk sits at the cap cost up to 2k Q (measured +2 Q for k = 1; the 10⁻⁵ plan has 7–9 bits on some ticks, so roughly +2 to +18 Q), unless the payload gives the room back, and that is exactly what switches on the payload's approximate compares. So the cost in score is higher still.
 
-**Verdict.** A leapfrog circuit that passes without grinding (λ ≲ 0.2) costs at least about 6% T plus several qubits: roughly 975M+ against the leader's 915.3M. The leader's lead rests to a large extent on grinding a λ ≈ 14.5 circuit, not on the walk being cheap and exact. The structural reason for the tail is that a slow walk is a few ticks behind, and at about 2 bits per tick that lag becomes 6–10 bits of width on the late ticks.
+**Verdict.** A leapfrog circuit that passes without grinding (λ ≲ 0.2) costs at least about 6% T plus several qubits for the walk alone. It must also buy out the payload's λ ≈ 2.6, which is not priced here: roughly 975M+ against the leader's 915.3M. The leader's lead rests to a large extent on grinding a λ ≈ 14.5 circuit, not on the walk being cheap and exact. The structural reason for the tail is that a slow walk is a few ticks behind, and at about 2 bits per tick that lag becomes 6–10 bits of width on the late ticks.
 
 ## hddivsteps: checked, not prototyped
 
