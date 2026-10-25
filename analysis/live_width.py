@@ -63,6 +63,31 @@ def raw_ops(path):
         yield from REC.iter_unpack(chunk)
 
 
+def fiat_shamir_inputs(path, count=9024):
+    """The evaluator's own test points: SHAKE256 over the op stream (v2 domain)."""
+    import hashlib
+    with open(path, "rb") as handle:
+        total = struct.unpack("<Q", handle.read(16)[8:])[0]
+    hasher = hashlib.shake_256(b"quantum_ecc-fiat-shamir-v2" + struct.pack("<Q", total))
+    batch = []
+    for kind, _, c2, c1, target, bit, cbit, reg in raw_ops(path):
+        batch.append(struct.pack("<B6Q", kind, c2, c1, target, bit, cbit, reg))
+        if len(batch) == 65536:
+            hasher.update(b"".join(batch))
+            batch = []
+    hasher.update(b"".join(batch))
+    stream = hasher.digest(64 * count)
+    points = []
+    for shot in range(count):
+        k1 = int.from_bytes(stream[64 * shot:64 * shot + 32], "little")
+        k2 = int.from_bytes(stream[64 * shot + 32:64 * shot + 64], "little")
+        t, o = mul(k1), mul(k2)
+        if t is None or o is None or t[0] == o[0]:
+            continue
+        points.append((t, o))
+    return points
+
+
 def registers(path):
     # Upstream circuits may declare registers anywhere (the leader does it last).
     regs = {}
@@ -96,17 +121,22 @@ def ranges(indices):
     return out
 
 
-def run(path, shots, seed, sample_every, rank_points=()):
+def run(path, shots, seed, sample_every, rank_points=(), fiat_shamir=False):
     rng = random.Random(seed)
     regs = registers(path)
+    fixed = fiat_shamir_inputs(path) if fiat_shamir else None
+    if fixed:
+        shots = len(fixed)
     full = (1 << shots) - 1
     q, bits = {}, {}
     expected = []
     for shot in range(shots):
-        while True:
+        while not fixed:
             t, o = mul(rng.randrange(1, N)), mul(rng.randrange(1, N))
             if t[0] != o[0]:
                 break
+        if fixed:
+            t, o = fixed[shot]
         expected.append(add(t, o))
         for reg, value in zip(range(4), (t[0], t[1], o[0], o[1])):
             for index, (kind, wire) in enumerate(regs[reg]):
@@ -234,11 +264,12 @@ if __name__ == "__main__":
     parser.add_argument("--shots", type=int, default=128)
     parser.add_argument("--seed", type=int, default=1080)
     parser.add_argument("--sample-every", type=int, default=20000)
+    parser.add_argument("--fiat-shamir", action="store_true", help="use the evaluator's own 9,024 test points")
     parser.add_argument("--rank-at", type=int, nargs="*", default=[])
     parser.add_argument("--snapshots", type=Path, help="pickle of live wire values at --rank-at ops")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
-    result = run(args.ops, args.shots, args.seed, args.sample_every, set(args.rank_at))
+    result = run(args.ops, args.shots, args.seed, args.sample_every, set(args.rank_at), args.fiat_shamir)
     snapshots = result.pop("snapshots")
     if args.snapshots:
         import pickle
