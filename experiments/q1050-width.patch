@@ -1,0 +1,13 @@
+diff --git a/src/point_add/frogtail_batch/pointadd_lilypad.rs b/src/point_add/frogtail_batch/pointadd_lilypad.rs
+index 9819e89..a919cad 100644
+--- a/src/point_add/frogtail_batch/pointadd_lilypad.rs
++++ b/src/point_add/frogtail_batch/pointadd_lilypad.rs
+@@ -77,7 +77,7 @@ fn tail_k0() -> usize {
+ pub const PEAK0: u64 = if super::LILYPAD_G {
+     // Feasibility cap only: the independently allocated inverse workspace
+     // remains authoritative and may exceed this requested shell width.
+-    if super::lilypad_g::HALF_COFACTOR_G { 999 } else { 890 }
++    if super::lilypad_g::HALF_COFACTOR_G { 1050 } else { 890 }
+ } else {
+     892
+ };

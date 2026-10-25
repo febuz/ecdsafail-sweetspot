@@ -1,0 +1,1001 @@
+{
+  "retrieved_at_utc": "2026-10-25T09:39:49.428010+00:00",
+  "source": "https://api.ecdsa.fail/api/benchmarks/1ffb695a-309b-46b6-a728-2f97d8c7be74/submissions",
+  "benchmark_id": "1ffb695a-309b-46b6-a728-2f97d8c7be74",
+  "scored_submission_count": 1584,
+  "cap": 1080,
+  "target_toffoli": 850000,
+  "global_leader": {
+    "id": "da097c38-3db4-4d6e-926b-98cec8026e98",
+    "q": 1234,
+    "t": 741719,
+    "score": 915281246,
+    "status": "accepted",
+    "solver": "jackylee0424",
+    "created": "2026-10-25T05:20:07.675Z",
+    "commit": "644857a7724560048a4ce23b3d8364a81010881c"
+  },
+  "lowest_t_under_cap": {
+    "id": "07112bcc-26c3-449a-8f0a-b998ca92aa91",
+    "q": 1080,
+    "t": 1837665,
+    "score": 1984678200,
+    "status": "rejected",
+    "solver": "odinfree",
+    "created": "2026-10-24T12:10:01.024Z",
+    "commit": "ea4ef4f6628339cfac747f4ca82df0d45ae12b6c"
+  },
+  "lowest_product_under_cap": {
+    "id": "d9e6ed49-3831-4ad2-803b-ae8a5c5106ef",
+    "q": 885,
+    "t": 2163094,
+    "score": 1914338190,
+    "status": "rejected",
+    "solver": "gnuchev",
+    "created": "2026-10-22T09:00:37.415Z",
+    "commit": "6535301ef5df5c098696930282631493f278883b"
+  },
+  "strict_record_toffoli_at_cap": 847482,
+  "pareto_frontier": [
+    {
+      "id": "eb32c57a-64bb-4168-9aab-eafa3fbc7472",
+      "q": 660,
+      "t": 488700614,
+      "score": 322542405240,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T03:42:44.472Z",
+      "commit": "148760771fad52b73212a2202963ad259a501e97"
+    },
+    {
+      "id": "f95b5d95-f6e8-4e95-9dd4-72e7ceca11ce",
+      "q": 675,
+      "t": 389735655,
+      "score": 263071567125,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T05:43:27.821Z",
+      "commit": "fe0612fbbf1acf5e2d1ef268fa8c0e839d465388"
+    },
+    {
+      "id": "813ba61d-f1de-4442-8100-49942955e8cc",
+      "q": 691,
+      "t": 294578471,
+      "score": 203553723461,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T06:03:49.522Z",
+      "commit": "e65a48d6c5cb5013ad1d5faf7635014c8bbf653d"
+    },
+    {
+      "id": "b902c42d-896b-40e0-b3e5-556780db59be",
+      "q": 698,
+      "t": 290193999,
+      "score": 202555411302,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T06:22:05.556Z",
+      "commit": "d75dd03773859b1e438dde877442e78eba676174"
+    },
+    {
+      "id": "5a091ada-39c5-4086-84c7-d4792e1c02d6",
+      "q": 713,
+      "t": 253627278,
+      "score": 180836249214,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T11:58:26.956Z",
+      "commit": "782c119acc6dee7f26e2fd1b972debe32826a668"
+    },
+    {
+      "id": "36666b3b-99ee-4c8b-90c2-c9595b5528e9",
+      "q": 719,
+      "t": 251305962,
+      "score": 180688986678,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T06:41:50.245Z",
+      "commit": "20d1286d7aafe553ac1db7a90859392ca5b650ae"
+    },
+    {
+      "id": "2124a8d4-90fc-490a-8613-3ba225b251cf",
+      "q": 720,
+      "t": 233791304,
+      "score": 168329738880,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T06:57:40.992Z",
+      "commit": "6009fdbd627478373a81ab4f2aad90946a6493a5"
+    },
+    {
+      "id": "2edf5ae9-e0bd-46d2-9d42-a531a0f0e309",
+      "q": 722,
+      "t": 215546810,
+      "score": 155624796820,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T05:29:45.872Z",
+      "commit": "199afb74eb998ad93b9348e14eb3a1817b14726f"
+    },
+    {
+      "id": "977717a7-554a-4808-95c5-ddf535afa0b9",
+      "q": 724,
+      "t": 205598493,
+      "score": 148853308932,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T07:11:55.758Z",
+      "commit": "d1a7715a5d109413fdabc190680776c25dfa1c70"
+    },
+    {
+      "id": "c282c565-5697-4a63-a37b-7f446b646655",
+      "q": 770,
+      "t": 114591340,
+      "score": 88235331800,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T07:56:20.276Z",
+      "commit": "5741e19592d7d11167a1568969ca5e2db8ec9132"
+    },
+    {
+      "id": "5b3426f9-1b67-4752-8d13-585cf8a81229",
+      "q": 791,
+      "t": 52723063,
+      "score": 41703942833,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T12:47:58.742Z",
+      "commit": "107d9c5109cb22e375aa555cdebc2db68c90fca9"
+    },
+    {
+      "id": "7e397134-fbbf-49fc-89ea-f17565fd12ff",
+      "q": 792,
+      "t": 38907382,
+      "score": 30814646544,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T18:40:24.692Z",
+      "commit": "f6e6a2501f0ed4c3435520b18ce95805fa167726"
+    },
+    {
+      "id": "94f4a62a-6634-4211-86b5-addd55090b98",
+      "q": 793,
+      "t": 31174688,
+      "score": 24721527584,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T19:20:44.555Z",
+      "commit": "9f9647de78e936361a26a4ada6f2351fffb64ff1"
+    },
+    {
+      "id": "b1679689-53e0-441a-838a-bc207570f9d6",
+      "q": 794,
+      "t": 24686015,
+      "score": 19600695910,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T09:21:41.069Z",
+      "commit": "1ce996d48f22e29e2535e78899ff46a7b70337b2"
+    },
+    {
+      "id": "ccee801d-a51e-417c-a3c8-0903c0883fd9",
+      "q": 795,
+      "t": 19446323,
+      "score": 15459826785,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T08:57:16.013Z",
+      "commit": "92e331b8aa92a6e7b44e3c4e97094e95846df48a"
+    },
+    {
+      "id": "feb15c3b-11c9-4f3d-8822-08fcbaa6c6b8",
+      "q": 796,
+      "t": 15860578,
+      "score": 12625020088,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T09:10:03.293Z",
+      "commit": "6bf65db297870f7f21971d7bad95415a607c85e2"
+    },
+    {
+      "id": "5e8c7b0d-331d-4fb1-988a-00fb7ed36ed9",
+      "q": 797,
+      "t": 14389813,
+      "score": 11468680961,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T08:20:47.969Z",
+      "commit": "e3d48fdd5745ee071279133ff0b743cc7e08f6fe"
+    },
+    {
+      "id": "2c4d99a3-2f95-46d6-bc02-c5485f32a428",
+      "q": 798,
+      "t": 13267652,
+      "score": 10587586296,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T08:47:36.510Z",
+      "commit": "36cb1e45ba61fe7a5272d1c84b44352792764b55"
+    },
+    {
+      "id": "b3a70fb3-44c0-4738-9da3-0000cf031c6a",
+      "q": 799,
+      "t": 12710657,
+      "score": 10155814943,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T23:46:45.038Z",
+      "commit": "92186c3796cba8c06005f1c26e467c070c4606bd"
+    },
+    {
+      "id": "b87feebf-68e6-46bf-881d-80981e332363",
+      "q": 800,
+      "t": 12612726,
+      "score": 10090180800,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T00:06:57.027Z",
+      "commit": "dccef300ce364a419b8792438997f19b4c709e9e"
+    },
+    {
+      "id": "4adeb0af-0971-4e6c-8aad-cf270d12b8f4",
+      "q": 801,
+      "t": 12595767,
+      "score": 10089209367,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T00:17:36.144Z",
+      "commit": "5e90751eea243bd353c365a2f11195bea9cc19bc"
+    },
+    {
+      "id": "c98e6103-0444-4bad-8ba6-2eba903e7c45",
+      "q": 802,
+      "t": 12580953,
+      "score": 10089924306,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T00:35:16.488Z",
+      "commit": "9c44d42ecb4df4a08c9c8b36ef069238a9487579"
+    },
+    {
+      "id": "a3b6c26c-90cf-40b1-ba3c-66e09fb9fe48",
+      "q": 803,
+      "t": 12578261,
+      "score": 10100343583,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T00:45:03.330Z",
+      "commit": "e7cd2f203ab32c7467633cf1d884913feb44aeb5"
+    },
+    {
+      "id": "259e2663-d165-4da9-a0ae-e357707e543b",
+      "q": 806,
+      "t": 11577806,
+      "score": 9331711636,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T05:40:30.081Z",
+      "commit": "62687c5056c94fe26e81ce8e818673f9ead32889"
+    },
+    {
+      "id": "874c80e7-e944-4eb9-8894-08de9512ff3a",
+      "q": 807,
+      "t": 11012912,
+      "score": 8887419984,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T05:30:54.720Z",
+      "commit": "6a93a62e59a84e3e3e1d32566ab50dae2ce4911f"
+    },
+    {
+      "id": "4274c7e0-b16f-4d63-8fae-83ad15e51fee",
+      "q": 808,
+      "t": 10640971,
+      "score": 8597904568,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T04:03:06.096Z",
+      "commit": "28b8f20dfc897320c32f0aa2c2b6eea6ff8e14af"
+    },
+    {
+      "id": "af58d530-9f4c-4fce-b948-f1d3df8b3ede",
+      "q": 809,
+      "t": 10365468,
+      "score": 8385663612,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T22:21:48.539Z",
+      "commit": "f2ccba2db3f27931be60944aea446a78f95a2515"
+    },
+    {
+      "id": "31326aa6-0ad3-40d3-8069-714b4330a726",
+      "q": 810,
+      "t": 10282406,
+      "score": 8328748860,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T06:22:02.748Z",
+      "commit": "a8aca16ea55efcbd7d4fe9408117fc28cf875cef"
+    },
+    {
+      "id": "c9f82524-5d65-47ff-9692-299d1a178e5f",
+      "q": 811,
+      "t": 10264333,
+      "score": 8324374063,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T06:50:35.169Z",
+      "commit": "4459043af3a5f419262780e5446df96ec685a048"
+    },
+    {
+      "id": "32e2e506-ef4f-4482-9ccd-5a4034ac96f8",
+      "q": 812,
+      "t": 10071328,
+      "score": 8177918336,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T05:58:43.228Z",
+      "commit": "c000ddbb6aa8cebffceb61ff59471947e1a8ba8d"
+    },
+    {
+      "id": "b9c632ec-f453-48ee-a8ba-5fbcdfdb1071",
+      "q": 813,
+      "t": 9907605,
+      "score": 8054882865,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T05:20:24.902Z",
+      "commit": "dfee6f4981bc1a3146abd9bc115f0f79604141ec"
+    },
+    {
+      "id": "0ee3673f-745a-4ded-be1c-6453ca442f95",
+      "q": 814,
+      "t": 9829517,
+      "score": 8001226838,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T04:22:06.365Z",
+      "commit": "17b1f000ff12abac073c8ecf0565b5f1e9289e79"
+    },
+    {
+      "id": "c1ae721b-b74a-4242-a336-a7492319430c",
+      "q": 815,
+      "t": 9815991,
+      "score": 8000032665,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:13:37.922Z",
+      "commit": "c9c5e010d23ecd0a041688fdd93e38a898056d2c"
+    },
+    {
+      "id": "28651875-43b0-40de-bffa-3d31caa7fdad",
+      "q": 816,
+      "t": 9803523,
+      "score": 7999674768,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T04:44:41.870Z",
+      "commit": "087a5d453bd9334fbe1a676461ba33462cfe3a22"
+    },
+    {
+      "id": "27f53a6a-ac72-4ec8-9f13-81a7ddef4316",
+      "q": 817,
+      "t": 9759081,
+      "score": 7973169177,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:02:47.114Z",
+      "commit": "11a33acb861346d736438646de1ee5902423140b"
+    },
+    {
+      "id": "6d08713c-4a11-4384-9fe4-53fb9f5aca02",
+      "q": 818,
+      "t": 9748991,
+      "score": 7974674638,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T05:52:11.633Z",
+      "commit": "417636d9752a6082e8ace90ab6edecc3190738d7"
+    },
+    {
+      "id": "7a7367a3-3cf5-43d4-94a7-0a6189d1c39c",
+      "q": 839,
+      "t": 8564543,
+      "score": 7185651577,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-24T21:29:32.338Z",
+      "commit": "2cca36f958f6e5a818e9f693a2f95f7a2e3ece25"
+    },
+    {
+      "id": "42dd64fa-8cca-4d49-9c2b-65f90da2805c",
+      "q": 856,
+      "t": 3853610,
+      "score": 3298690160,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T08:18:50.387Z",
+      "commit": "5be83d9f70f5565500acf75d6126e5ce2a97b2c5"
+    },
+    {
+      "id": "37cded22-376b-4d26-83a9-7aa16b0d5105",
+      "q": 867,
+      "t": 2243275,
+      "score": 1944919425,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T17:44:12.124Z",
+      "commit": "893d83bab084880ee329235952e9f7694d528b14"
+    },
+    {
+      "id": "977463ad-6976-4a91-be36-dbae75bd49b7",
+      "q": 870,
+      "t": 2237177,
+      "score": 1946343990,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T12:52:34.308Z",
+      "commit": "1279128bc77fb42af25bfdcb3f16f82ec7c51ee4"
+    },
+    {
+      "id": "d9e6ed49-3831-4ad2-803b-ae8a5c5106ef",
+      "q": 885,
+      "t": 2163094,
+      "score": 1914338190,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T09:00:37.415Z",
+      "commit": "6535301ef5df5c098696930282631493f278883b"
+    },
+    {
+      "id": "502b24da-67c4-4acd-8597-4dda6050fa14",
+      "q": 935,
+      "t": 2097309,
+      "score": 1960983915,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T08:30:15.946Z",
+      "commit": "cfc78693cce6405828b80750bf4dadd7bfd4e9ec"
+    },
+    {
+      "id": "5b26cb3a-794b-48de-be05-60c859ca6ddb",
+      "q": 965,
+      "t": 2029265,
+      "score": 1958240725,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T00:56:20.791Z",
+      "commit": "68716e1e4ef55f2cc8851a946920cadd3db4be47"
+    },
+    {
+      "id": "aee17ce0-0cbb-400f-bd42-0ebe29799799",
+      "q": 999,
+      "t": 1998018,
+      "score": 1996019982,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T11:38:40.434Z",
+      "commit": "f50ee007fdf84054fa44b71240c28a66a47aad8e"
+    },
+    {
+      "id": "7dd3b9ca-8193-4ce6-9545-cb8e84a36160",
+      "q": 1059,
+      "t": 1978608,
+      "score": 2095345872,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T05:46:40.986Z",
+      "commit": "3d4f37b1599a117ea0a441d5389c98172893d7f1"
+    },
+    {
+      "id": "d3fecc7a-6d1a-4b9b-8240-a50ab158057c",
+      "q": 1063,
+      "t": 1970390,
+      "score": 2094524570,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T05:39:59.602Z",
+      "commit": "026b0cb8c39e0ee67720dd7aa8a237774e2af84f"
+    },
+    {
+      "id": "309bf464-9dc8-4c41-b271-e81ec9bc7c69",
+      "q": 1064,
+      "t": 1967974,
+      "score": 2093924336,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-25T05:33:20.587Z",
+      "commit": "adfcf8f7cdcd3445469340edc249703f661c726b"
+    },
+    {
+      "id": "f6a88040-c300-49a1-b343-5180c8f91c44",
+      "q": 1065,
+      "t": 1892815,
+      "score": 2015847975,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T15:20:45.677Z",
+      "commit": "52b7997b7725abdc12b79a2c06a5110d57ad35b8"
+    },
+    {
+      "id": "db235958-c7fc-4890-bfd0-c91a5cc5eaa5",
+      "q": 1068,
+      "t": 1881205,
+      "score": 2009126940,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T15:11:49.262Z",
+      "commit": "d7f4e842c90df365b5c08a5e25b326aba53894f0"
+    },
+    {
+      "id": "64a92074-5000-4bc1-b45f-a5835434e621",
+      "q": 1075,
+      "t": 1851560,
+      "score": 1990427000,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T11:29:29.704Z",
+      "commit": "6aae307fc5454f9c9d550246135203cfa73ab3da"
+    },
+    {
+      "id": "e385920e-45c8-443a-a87d-2a2a51d0a894",
+      "q": 1078,
+      "t": 1843238,
+      "score": 1987010564,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T15:29:02.776Z",
+      "commit": "3a3b0ad427ec970ebf3c5d7e7dd4627f77296036"
+    },
+    {
+      "id": "07112bcc-26c3-449a-8f0a-b998ca92aa91",
+      "q": 1080,
+      "t": 1837665,
+      "score": 1984678200,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T12:10:01.024Z",
+      "commit": "ea4ef4f6628339cfac747f4ca82df0d45ae12b6c"
+    },
+    {
+      "id": "93b7d82c-b850-49be-b28e-9191d9644e91",
+      "q": 1081,
+      "t": 1835598,
+      "score": 1984281438,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T15:42:56.618Z",
+      "commit": "1f406475db7d7c7f29da3a1aba8f0c8349246e3c"
+    },
+    {
+      "id": "2a93d7f4-251e-45e5-b03f-a66fbeb88893",
+      "q": 1082,
+      "t": 1833093,
+      "score": 1983406626,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T15:01:01.587Z",
+      "commit": "3304d28f6ca81d90192f904cf7e6f36f715a0bb6"
+    },
+    {
+      "id": "38fea0d4-26fb-475d-9b58-e32a86d43fe9",
+      "q": 1083,
+      "t": 1831430,
+      "score": 1983438690,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T14:54:13.696Z",
+      "commit": "394e23d811491e29e3e1b1b3bbcb6b9c1e6f92cd"
+    },
+    {
+      "id": "4d9fe2df-ef05-453a-a19d-45dc44d166d1",
+      "q": 1084,
+      "t": 1829732,
+      "score": 1983429488,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-24T15:36:24.187Z",
+      "commit": "77d97c24021608bfc05990738cf0dda795fc3a79"
+    },
+    {
+      "id": "669edf68-773d-4632-b0ad-81c2b18aa137",
+      "q": 1085,
+      "t": 1828228,
+      "score": 1983627380,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T08:32:32.143Z",
+      "commit": "1802bd6f61ee53376cf352a0ff6dcce0889a5027"
+    },
+    {
+      "id": "6677a7f8-9bd7-47fa-9929-962fa4716513",
+      "q": 1086,
+      "t": 1827069,
+      "score": 1984196934,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T08:39:15.980Z",
+      "commit": "b56e125f1fa963c19c1d5760a969240cab305e3e"
+    },
+    {
+      "id": "eec67ef1-d738-424c-94a4-a8d1a5eb584f",
+      "q": 1087,
+      "t": 1825900,
+      "score": 1984753300,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T07:49:16.353Z",
+      "commit": "da407419d9c6f8c5a0b855a0fa98fdd31d6f1cdb"
+    },
+    {
+      "id": "e91429d2-1721-4ceb-ad38-65b713ece22d",
+      "q": 1088,
+      "t": 1824835,
+      "score": 1985420480,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T07:32:24.633Z",
+      "commit": "68142bde8a34b53be714058fe3fb41749cb3d22b"
+    },
+    {
+      "id": "ea62e9ab-b8bf-4ba0-8207-00bd5d9d6f4e",
+      "q": 1089,
+      "t": 1823872,
+      "score": 1986196608,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T07:08:07.065Z",
+      "commit": "108b9d4160c273ca4c997f7757689c345effd21b"
+    },
+    {
+      "id": "067415c6-9bb3-4873-bce1-87a86b5d99a2",
+      "q": 1090,
+      "t": 1822774,
+      "score": 1986823660,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:45:17.160Z",
+      "commit": "0574a23702b980a1f3af0d8bef5995e82448f7f0"
+    },
+    {
+      "id": "dfea927f-345c-4dd1-91c0-83ec581b5efb",
+      "q": 1091,
+      "t": 1821784,
+      "score": 1987566344,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:30:41.045Z",
+      "commit": "f8cde482e33ae6a1900a64d799b435e25d734adc"
+    },
+    {
+      "id": "ace4bbe4-208f-4cfb-8b14-c1cd7ef0f211",
+      "q": 1092,
+      "t": 1821053,
+      "score": 1988589876,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:52:46.046Z",
+      "commit": "27cc9ead1757e75273cfa473545bce00435f43a0"
+    },
+    {
+      "id": "409c94a9-567e-422a-93d7-94ce0dfafe72",
+      "q": 1093,
+      "t": 1820183,
+      "score": 1989460019,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:37:57.133Z",
+      "commit": "21a26180bfe9e8be10d3b0a4090efd1cf912413e"
+    },
+    {
+      "id": "4905a5a4-2bae-49ca-8d90-95e42fcdbe7f",
+      "q": 1094,
+      "t": 1819357,
+      "score": 1990376558,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T07:00:58.015Z",
+      "commit": "db9ce9a7bee695ab6c0cad8463c525b0873f6530"
+    },
+    {
+      "id": "8a57279a-f075-4b62-af9f-08c9e5ff0aab",
+      "q": 1095,
+      "t": 1818591,
+      "score": 1991357145,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T06:24:18.972Z",
+      "commit": "69f16da54c788f8a2c0359c6c6e6b9d11d8d15eb"
+    },
+    {
+      "id": "f44a525c-2f4d-4eb1-bf45-dd14378584f7",
+      "q": 1096,
+      "t": 1817839,
+      "score": 1992351544,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T05:24:16.841Z",
+      "commit": "c7e154fa9201595fd49fa9bc2397c83202b05df3"
+    },
+    {
+      "id": "11613a51-1243-4f91-801a-9e71600d1f99",
+      "q": 1097,
+      "t": 1814134,
+      "score": 1990104998,
+      "status": "rejected",
+      "solver": "SnehalRaj",
+      "created": "2026-10-24T15:03:51.870Z",
+      "commit": "ae2a603a872723369fb9ff86fdb67b96265ca3d3"
+    },
+    {
+      "id": "c064d6c0-d8de-40c1-880d-0567bba36f81",
+      "q": 1102,
+      "t": 1813580,
+      "score": 1998565160,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T02:30:02.206Z",
+      "commit": "5fdc9b17a05cef1a0c214ad800117152e18d2e87"
+    },
+    {
+      "id": "b3376dd2-00de-4312-9322-e93650bbba5b",
+      "q": 1103,
+      "t": 1812869,
+      "score": 1999594507,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T02:52:55.581Z",
+      "commit": "cc7f2ff1d8b9e3465d3ebbc8e2b84db22252c763"
+    },
+    {
+      "id": "08f81faf-9252-46b9-acea-a355da3ccc2b",
+      "q": 1104,
+      "t": 1812185,
+      "score": 2000652240,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T03:21:00.956Z",
+      "commit": "4a7c9d0fdd272731c7c774a4398cce024e041eb5"
+    },
+    {
+      "id": "ee7fec88-3550-4936-9d36-54ae5300168b",
+      "q": 1105,
+      "t": 1811486,
+      "score": 2001692030,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T03:27:53.574Z",
+      "commit": "7e5a0e377631f1713a3120e352b953d0274b61f7"
+    },
+    {
+      "id": "57e57f83-c937-4c3a-9c13-04cc51ca2f84",
+      "q": 1106,
+      "t": 1810689,
+      "score": 2002622034,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T03:35:21.700Z",
+      "commit": "0679e2ef1033f0c9227320c012b5d001cb30fed2"
+    },
+    {
+      "id": "ce7ac90b-32e8-4ce1-af9d-8c4884fceb3e",
+      "q": 1107,
+      "t": 1809946,
+      "score": 2003610222,
+      "status": "rejected",
+      "solver": "odinfree",
+      "created": "2026-10-25T05:11:02.166Z",
+      "commit": "1c9279fade33fa4ebb57c8a74e541c7dc851030a"
+    },
+    {
+      "id": "fcf61aeb-b809-4e93-8032-25a631619f82",
+      "q": 1108,
+      "t": 1801510,
+      "score": 1996073080,
+      "status": "rejected",
+      "solver": "edi3on",
+      "created": "2026-10-22T20:19:38.227Z",
+      "commit": "cb59bcb1c72db0f0fd40fcdf54d659368f1a8929"
+    },
+    {
+      "id": "28b7040d-820a-49ed-bfff-6dc18cc2156e",
+      "q": 1111,
+      "t": 1785244,
+      "score": 1983406084,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-09T08:17:49.579Z",
+      "commit": "d690a7e3074bdfeff3a9f2e89fa9498bc54f43a2"
+    },
+    {
+      "id": "c1c0da9f-3038-4cde-b0e2-6820791b6fcc",
+      "q": 1112,
+      "t": 1739356,
+      "score": 1934163872,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-02T04:23:41.180Z",
+      "commit": "3836ec797d0998c8367ce46b0f5bdaca55873d6e"
+    },
+    {
+      "id": "1c0e0e91-de6a-4348-bd4a-3b6351fdc70b",
+      "q": 1133,
+      "t": 1460511,
+      "score": 1654758963,
+      "status": "rejected",
+      "solver": "jieyilong",
+      "created": "2026-06-27T23:20:43.204Z",
+      "commit": "765ef38cd8ce99a3e3800e98a8a60db954d35b8f"
+    },
+    {
+      "id": "a21ec672-90db-4ecf-ade0-892e526bc680",
+      "q": 1134,
+      "t": 1460084,
+      "score": 1655735256,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-08-05T21:55:39.562Z",
+      "commit": "6c9283cb7f329c398204802e6e144c6f390755df"
+    },
+    {
+      "id": "3d9ce591-8f26-4b76-8abf-0d41728e3939",
+      "q": 1141,
+      "t": 1423723,
+      "score": 1624467943,
+      "status": "rejected",
+      "solver": "jieyilong",
+      "created": "2026-06-24T05:21:53.167Z",
+      "commit": "370fc319832b78e58d1e139174b58d4a627bddd3"
+    },
+    {
+      "id": "0e046f23-c08d-495a-8f68-74c89b12d99a",
+      "q": 1142,
+      "t": 1131779,
+      "score": 1292491618,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-10-22T13:37:22.683Z",
+      "commit": "6e148cfc3aa800ce881aaa48e8c9136d39da6430"
+    },
+    {
+      "id": "e4c2554c-9d19-4613-ab14-28e8ce37b13a",
+      "q": 1143,
+      "t": 1111662,
+      "score": 1270629666,
+      "status": "rejected",
+      "solver": "gopikannappan",
+      "created": "2026-10-20T08:19:02.109Z",
+      "commit": "8541fb1542d76864e7978328e56b31514d38c0cb"
+    },
+    {
+      "id": "b8189739-b8bd-46e2-bd0b-b4f42b06ee37",
+      "q": 1144,
+      "t": 1102903,
+      "score": 1261721032,
+      "status": "rejected",
+      "solver": "gopikannappan",
+      "created": "2026-10-20T10:38:31.023Z",
+      "commit": "d90b306b63a25eccae8c38de9070b092b35404f4"
+    },
+    {
+      "id": "05a049a2-b77f-49e0-8651-5cad9dd66115",
+      "q": 1148,
+      "t": 1062307,
+      "score": 1219528436,
+      "status": "rejected",
+      "solver": "gopikannappan",
+      "created": "2026-10-21T21:50:43.407Z",
+      "commit": "1724be5616e66fdc21e458639b8f2aa41c5c911b"
+    },
+    {
+      "id": "17041052-8268-4f25-99db-4286cda9b293",
+      "q": 1152,
+      "t": 1036792,
+      "score": 1194384384,
+      "status": "rejected",
+      "solver": "gopikannappan",
+      "created": "2026-10-21T21:53:49.088Z",
+      "commit": "36ced3f936c28ae844c34b1b94d285655657d4f9"
+    },
+    {
+      "id": "2067ff83-eba5-46cb-81b8-480bf2d27b5b",
+      "q": 1156,
+      "t": 1022147,
+      "score": 1181601932,
+      "status": "rejected",
+      "solver": "gopikannappan",
+      "created": "2026-10-21T21:57:27.882Z",
+      "commit": "a6c3394cdde6421a2fbc646a61b21557be524d6d"
+    },
+    {
+      "id": "0e03fe13-2305-4c0d-a856-73c7e4daed9e",
+      "q": 1159,
+      "t": 997322,
+      "score": 1155896198,
+      "status": "rejected",
+      "solver": "jackylee0424",
+      "created": "2026-10-22T17:22:51.872Z",
+      "commit": "65f145fbd925dcc5d164738e0f096840bf4805f6"
+    },
+    {
+      "id": "17250b2e-ac81-4cb5-a4b3-a0029a8d5da4",
+      "q": 1164,
+      "t": 970983,
+      "score": 1130224212,
+      "status": "rejected",
+      "solver": "gnuchev",
+      "created": "2026-09-30T05:06:39.170Z",
+      "commit": "18b73824983ccf0202376da3eb7f9cde56f3c44d"
+    },
+    {
+      "id": "b72ce1ae-c5e0-46b8-a562-b5f1ac4d074a",
+      "q": 1170,
+      "t": 946553,
+      "score": 1107467010,
+      "status": "accepted",
+      "solver": "dysnasia",
+      "created": "2026-10-06T18:32:22.560Z",
+      "commit": "0c373cdab3857eb5736caeecb39f7ddcea567954"
+    },
+    {
+      "id": "a158447c-9c4d-4bcd-8cfa-fa2667508690",
+      "q": 1171,
+      "t": 945839,
+      "score": 1107577469,
+      "status": "accepted",
+      "solver": "dysnasia",
+      "created": "2026-10-06T10:54:34.906Z",
+      "commit": "a6034cb8fa0653c2746bd64c3ca2b0ad6b9fb5ff"
+    },
+    {
+      "id": "73c5e2a8-f15c-4b01-a3ac-8d0ac1807391",
+      "q": 1172,
+      "t": 945335,
+      "score": 1107932620,
+      "status": "accepted",
+      "solver": "jackylee0424",
+      "created": "2026-10-05T15:49:07.393Z",
+      "commit": "9db31da9a0971a2185e54d12d9441c36838aba40"
+    },
+    {
+      "id": "1d602397-0e14-4314-8834-3e80db97b02c",
+      "q": 1173,
+      "t": 944566,
+      "score": 1107975918,
+      "status": "accepted",
+      "solver": "dysnasia",
+      "created": "2026-10-04T23:41:44.722Z",
+      "commit": "e3fd358e6c56c477d8c7378c1987de34d79b9ede"
+    },
+    {
+      "id": "ee410040-42fd-4a53-bcea-1150b7e2c5bf",
+      "q": 1174,
+      "t": 943826,
+      "score": 1108051724,
+      "status": "accepted",
+      "solver": "dysnasia",
+      "created": "2026-10-03T13:27:51.226Z",
+      "commit": "d6dd7ef7e1b7aa4eb2de5066f75482d9b355c0e3"
+    },
+    {
+      "id": "da097c38-3db4-4d6e-926b-98cec8026e98",
+      "q": 1234,
+      "t": 741719,
+      "score": 915281246,
+      "status": "accepted",
+      "solver": "jackylee0424",
+      "created": "2026-10-25T05:20:07.675Z",
+      "commit": "644857a7724560048a4ce23b3d8364a81010881c"
+    },
+    {
+      "id": "e4075d6c-bd41-4e1a-bc77-8f9b30ca5678",
+      "q": 1240,
+      "t": 740798,
+      "score": 918589520,
+      "status": "accepted",
+      "solver": "jackylee0424",
+      "created": "2026-10-22T15:10:07.488Z",
+      "commit": "6602a4e835898b9a4118f040806195571c6e8967"
+    }
+  ]
+}

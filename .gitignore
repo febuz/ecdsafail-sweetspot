@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.DS_Store
+ops.bin
+score.json
+target/
+raw-submissions*.json
+.work/

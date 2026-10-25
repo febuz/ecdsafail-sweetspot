@@ -1,0 +1,28 @@
+{
+  "upstream": "https://github.com/Layr-Labs/ecdsafail-challenge",
+  "cases": {
+    "q999": {
+      "commit": "f50ee007fdf84054fa44b71240c28a66a47aad8e",
+      "submission": "aee17ce0-0cbb-400f-bd42-0ebe29799799",
+      "official_metrics": {"qubits": 999, "toffoli": 1998018},
+      "status": "officially evaluated upstream; not rerun to completion here"
+    },
+    "q1050": {
+      "commit": "f50ee007fdf84054fa44b71240c28a66a47aad8e",
+      "patch": "experiments/q1050-width.patch",
+      "status": "unvalidated width experiment; not an 850000-Toffoli circuit"
+    },
+    "q1080_reference": {
+      "commit": "ea4ef4f6628339cfac747f4ca82df0d45ae12b6c",
+      "submission": "07112bcc-26c3-449a-8f0a-b998ca92aa91",
+      "official_metrics": {"qubits": 1080, "toffoli": 1837665},
+      "status": "officially evaluated upstream; not rerun locally"
+    },
+    "leader": {
+      "commit": "644857a7724560048a4ce23b3d8364a81010881c",
+      "submission": "da097c38-3db4-4d6e-926b-98cec8026e98",
+      "official_metrics": {"qubits": 1234, "toffoli": 741719},
+      "status": "officially evaluated upstream; local resource profiling only"
+    }
+  }
+}

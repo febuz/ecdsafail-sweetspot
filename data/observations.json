@@ -1,0 +1,16 @@
+{
+  "as_of_utc": "2026-10-25T09:33:59Z",
+  "benchmark_id": "1ffb695a-309b-46b6-a728-2f97d8c7be74",
+  "target": {"max_logical_qubits": 1080, "max_average_toffoli": 850000, "max_product_at_cap": 918000000, "max_toffoli_for_product_record_at_cap": 847482},
+  "official_reference_points": [
+    {"submission_id": "da097c38-3db4-4d6e-926b-98cec8026e98", "peak_qubits": 1234, "average_toffoli": 741719, "product": 915281246, "role": "global score leader"},
+    {"submission_id": "07112bcc-26c3-449a-8f0a-b998ca92aa91", "peak_qubits": 1080, "average_toffoli": 1837665, "product": 1984678200, "role": "lowest T under 1080 in snapshot"},
+    {"submission_id": "d9e6ed49-3831-4ad2-803b-ae8a5c5106ef", "peak_qubits": 885, "average_toffoli": 2163094, "product": 1914338190, "role": "lowest product under 1080 in snapshot"},
+    {"submission_id": "aee17ce0-0cbb-400f-bd42-0ebe29799799", "peak_qubits": 999, "average_toffoli": 1998018, "product": 1996019982, "role": "Lilypad reference"},
+    {"submission_id": "db235958-c7fc-4890-bfd0-c91a5cc5eaa5", "peak_qubits": 1068, "average_toffoli": 1881205, "product": 2009126940, "role": "nearby SKY-COF reference"}
+  ],
+  "local_experiments": [
+    {"source_commit": "f50ee007fdf84054fa44b71240c28a66a47aad8e", "change": "PEAK0 999 to 1050", "builder_peak_qubits": 1050, "builder_expected_toffoli_before_postpasses": 1970565.0, "builder_expected_toffoli_after_truth_and_classical_wide": 1966959.5, "official_evaluator": "not run; conditional pass and build stopped", "status": "unvalidated"},
+    {"source_commit": "644857a", "change": "none", "builder_peak_qubits": 1234, "builder_expected_toffoli_before_postpasses": 741932.8, "builder_peak_op": 1184445, "builder_peak_phase": "divide", "status": "resource profiling of official leader; local build stopped before evaluator"}
+  ]
+}

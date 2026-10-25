@@ -1,0 +1,16 @@
+ECDSA.fail sweet spot research
+
+This repository contains research and tooling based on public ECDSA.fail
+measurements and source at https://github.com/Layr-Labs/ecdsafail-challenge.
+
+The exploratory Q1050 patch changes a width constant in gnuchev's Q999
+submission aee17ce0-0cbb-400f-bd42-0ebe29799799, source commit
+f50ee007fdf84054fa44b71240c28a66a47aad8e. Its inherited implementation and
+optimizations are credited to their upstream authors in that submission.
+
+The challenge harness was adapted upstream from Google's elliptic-curve
+resource-estimation code. This repository does not redistribute that harness.
+
+Public benchmark metrics are attributed by submission ID, solver, source
+commit, and API URL in the data and documentation. Local estimates are marked
+unvalidated. No target achievement or hardware execution is claimed.
