@@ -283,10 +283,10 @@ def main():
         ("n (bits)", 256, "secp256k1"),
         ("Stappen T6", 535, "steps_tail.py: max 535 op 1,000,000 invoeren (P(>534)=4e-6)"),
         ("Stappen strikt", 591, "bewezen grens (sipa safegcd hull)"),
-        ("Som railbreedte-envelop (535)", 72315, "divsteps_sim.py envelop (1,500 invoeren, +4 bits marge)"),
-        ("Som ceil(w/16) (535)", 4775, "idem, voor de opgeknipte optellers"),
-        ("Som railbreedte-envelop (591)", 72651, "idem"),
-        ("Railbreedte laatste stap", 6, "idem"),
+        ("Som railbreedte-envelop (535)", 73267, "width_check.py: envelop over 200,000 invoeren (som 72,197) + 2 bits marge per stap"),
+        ("Som ceil(w/16) (535)", 4835, "4,775 + 952/16 (benadering van de ruimere envelop)"),
+        ("Som railbreedte-envelop (591)", 73603, "1,500-envelop + 2 + dezelfde verruiming (schatting)"),
+        ("Railbreedte laatste stap", 8, "envelop + marge"),
         ("Blokgrootte opgeknipte opteller k", 16, "oordeel"),
         ("Vergelijkvenster w (bits)", 40, "foutkans ~2^-40 per vergelijking"),
         ("Delta- en letterlogica per stap (T)", 42, "30 delta + 12 trit-pakking (schatting)"),
@@ -305,8 +305,8 @@ def main():
     n, st, sts, sw, sc, sw591, wend, kk, win, dl, tp, ca = [f"$B${4 + i}" for i in range(len(inputs))]
     r = 4 + len(inputs) + 1
     on.cell(row=r, column=1, value="Component (Toffoli)").font = HDR
-    on.cell(row=r, column=2, value="T6 (generiek, 2.95B)").font = HDR
-    on.cell(row=r, column=3, value="Strikt (geen enkele leader-techniek)").font = HDR
+    on.cell(row=r, column=2, value="T6 (generieke primitieven)").font = HDR
+    on.cell(row=r, column=3, value="Strikt (geen leader-constructie)").font = HDR
     for c in range(1, 4):
         on.cell(row=r, column=c).fill = HFILL
     comps = [
@@ -314,8 +314,8 @@ def main():
         ("Rails per pass", f"=2*{sw}-{st}+2*{sc}+{st}*{dl}", f"=3*{sw591}-{sts}+{sts}*{dl}"),
         ("Payload per stap: swap", f"={n}", f"={n}"),
         ("Payload per stap: add/sub", "=B{a}", "=C{a}"),
-        ("Payload per stap: mod-p correctie", f"=4*{win}+{n}", f"=5*{n}"),
-        ("Payload per stap: halveren", f"={n}+{win}", f"=2*{n}"),
+        ("Payload per stap: mod-p correctie", f"=4*{win}+B{{a}}", f"=4*{n}+C{{a}}"),
+        ("Payload per stap: halveren", f"=B{{a}}+{win}", f"=C{{a}}+{n}"),
         ("Payload per walk", "=B{st_}*(B{p1}+B{p2}+B{p3}+B{p4})", "=C{st_}*(C{p1}+C{p2}+C{p3}+C{p4})"),
         ("Walk (2 railpassen + payload)", "=2*B{rp}+B{pw}", "=2*C{rp}+C{pw}"),
         ("Kwadraat (schoolboek n^2/2 + reductie)", f"={n}^2/2+18*{n}+B{{a}}", f"={n}^2/2+{n}^2+C{{a}}"),
@@ -359,7 +359,8 @@ def main():
     on.column_dimensions["C"].width = 60
     on.cell(row=base + len(comps) + 1, column=1, value=(
         "T6 gebruikt generieke primitieven die de leader óók gebruikt (venster-vergelijkers #G17, opgeknipte optellers #G19, "
-        "Solinas #G24, meting-uncompute #G14). Strikt vermijdt alle technieken met 'In leader' = ja/deels.")).font = BLACK
+        "Solinas #G24, meting-uncompute #G14). Strikt = geen van de leader-constructies uit blad Gebruikt (G-ids); "
+        "elementaire poorten, optellers en vergelijkers deelt elk circuit en blijven toegestaan.")).font = BLACK
     score_t6 = f"Ontwerp!B{keys['qq'] + 1}"
     score_st = f"Ontwerp!C{keys['qq'] + 1}"
     t6_t, t6_q = f"Ontwerp!B{keys['tt']}", f"Ontwerp!B{keys['qq']}"
@@ -392,7 +393,7 @@ def main():
         vg.cell(row=rr, column=8, value=src).font = BLACK
     rr = 4 + len(rows)
     for nm, tref, qref, ex in [("Nieuw: DivPay T6 (generieke primitieven)", t6_t, t6_q, "ja (lambda~0.02)"),
-                               ("Nieuw: DivPay strikt (geen leader-techniek)", st_t, st_q, "ja (bewezen 591 stappen)")]:
+                               ("Nieuw: DivPay strikt (geen leader-constructie)", st_t, st_q, "ja (bewezen 591 stappen)")]:
         vg.cell(row=rr, column=1, value=nm).font = BOLD
         vg.cell(row=rr, column=2, value=f"={tref}").font = GREEN
         vg.cell(row=rr, column=3, value=f"={qref}").font = GREEN

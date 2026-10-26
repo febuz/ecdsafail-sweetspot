@@ -21,20 +21,23 @@ Code is in [`research/novel/`](../research/novel/).
 
 ## Result (cost model, not built)
 
-| Variant | Toffoli | Qubits | Score | vs Google low-gate (2.99B) |
-|---|---|---|---|---|
-| T6: textbook + generic modern primitives | 2.09M | 1,414 | **2.95B** | 0.986× (−1.4%) |
-| Strict: no technique the leader uses | 4.09M | 1,487 | 6.09B | 2.03× |
-| Leader (approximate, ground) | 0.74M | 1,234 | 0.915B | 0.31× |
+| Variant | Toffoli | Qubits | Score | vs Google low-gate (2.99B) | vs Google low-qubit (3.17B) |
+|---|---|---|---|---|---|
+| T6: textbook + generic modern primitives | 2.16M | 1,418 | **3.06B** | 1.024× (+2.4%) | 0.965× (−3.5%) |
+| Strict: none of the leader's constructs (G-ids) | 4.71M | 1,491 | 7.02B | 2.35× | 2.2× |
+| Leader (approximate, ground) | 0.74M | 1,234 | 0.915B | 0.31× | 0.29× |
 
-**How T6 beats Google, and by how much.** T6 beats both Google points, but only because it uses four generic primitives that the leader also uses:
-- window comparators;
-- chunked adders;
-- Solinas reduction;
-- measurement-based uncompute.
+**Strict definition.** No construct from the Gebruikt catalog (G-ids). Elementary gates, adders and comparators are shared by every circuit and stay allowed.
 
-The 1.4% margin over the low-gate point is smaller than the model's uncertainty. The chunked-adder overhead and the comparator costs are estimates.
+**Strictly leader-free does not beat Google.** It is about 2.35× worse.
 
-**Strictly leader-free, it does not beat Google.** It is about 2× worse.
+**T6 is about level with Google.**
+- It uses generic primitives that the leader also uses: window comparators, chunked adders, Solinas reduction and measurement-based uncompute.
+- It beats the low-qubit point by ~3.5%. Against the low-gate point it sits within model error, just above (+2.4%).
+- A first version priced the controlled ±p constant adds at n T without carry ancillas and showed 2.95B. That was corrected.
 
-**Exactness.** Both variants are effectively exact: λ ≈ 0.02 from truncating at 535 steps; strict uses the proven 591. Neither needs grinding.
+**Exactness.** No grinding is needed. The step-count truncation at 535 shows 0 failures in 10⁶ inputs: 95% upper bound ~3×10⁻⁶ per inversion, so λ ≲ 0.05. Strict uses the proven 591. The rail-width check (`width_check.py`, 200,000 inputs) found single steps up to 8 bits above the 1,500-sample envelope. The rails are now costed on the 200k envelope + 2 bits per step; a proven per-step bound (sipa hull) would make the widths exact.
+
+**Weighting caveats.**
+- The weighting sheet is a *suitability* ranking. With most T-effects at 0, maturity, simplicity and gate-set compatibility decide the order, so the top ranks are elementary primitives, not levers.
+- Gower novelty barely discriminates: 14 mostly binary features, and the unused inversion methods all land near the same neighbour.

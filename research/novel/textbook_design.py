@@ -28,7 +28,7 @@ LEADER = 741_719 * 1_234
 GOOGLE = {"Google low-qubit (2.7M x 1175)": 2_700_000 * 1_175, "Google low-gate (2.1M x 1425)": 2_100_000 * 1_425}
 
 
-def envelope(steps, samples=1500, margin=4):
+def envelope(steps, samples=1500, margin=6):  # 6: 200k-input envelope exceeds the 1,500-sample one by up to 8 bits on single steps; sum matches 200k + 2
     rnd = random.Random(11)
     mx = [0] * 591
     for _ in range(samples):
@@ -54,8 +54,8 @@ def design(steps, env, kind="gidney", k=32, win=40, pad_letters=8 / 5, cmp_anc=N
     # payload pass per step
     swap = n
     addsub = add_t
-    modfix = 2 * win + n + 2 * win
-    halve = n + win
+    modfix = 2 * win + add_t + 2 * win    # the +-p constant add pays the same adder cost as the others
+    halve = add_t + win
     pay = steps * (swap + addsub + modfix + halve)
     walk = 2 * rails + pay
     square = n * n // 2 + 9 * 2 * n + add_t
@@ -93,14 +93,15 @@ if __name__ == "__main__":
 
 
 def strict(steps, env):
-    """No technique the leader uses (catalog in_leader yes/partial): no measurement-based uncompute (adders 2n-1 with
+    """None of the leader's constructs from the Gebruikt catalog (G-ids); elementary gates, adders and comparators are
+    shared by every circuit and stay allowed. Concretely: no measurement-based uncompute (adders 2n-1 with
     Toffoli uncompute, 1 ancilla: CDKM), full-width comparators (n), no Solinas fold (generic Montgomery reduction of
     the square, ~n^2), no window truncation. Trimming the step count is itself 'partial' in the leader (round trimming),
     so the proven 591 is the strict choice."""
     n = N_BITS
     add_t = 2 * n - 1
     rails = sum(w + (2 * w - 1) for w in env) + steps * (30 + 12)
-    pay = steps * (n + add_t + (2 * n + n + 2 * n) + (n + n))
+    pay = steps * (n + add_t + (4 * n + add_t) + (add_t + n))   # constant adds as CDKM (2n-1), full compares n
     walk = 2 * rails + pay
     square = n * n // 2 + n * n + add_t
     t = 2 * walk + square + 4 * n
