@@ -98,6 +98,46 @@ The T column leaves out qubits. Rails widened by k bits on ticks where the walk 
 
 **Verdict.** A leapfrog circuit that passes without grinding (λ ≲ 0.2) costs at least about 6% T plus several qubits for the walk alone. It must also buy out the payload's λ ≈ 2.6, which is not priced here: roughly 975M+ against the leader's 915.3M. The leader's lead rests to a large extent on grinding a λ ≈ 14.5 circuit, not on the walk being cheap and exact. The structural reason for the tail is that a slow walk is a few ticks behind, and at about 2 bits per tick that lag becomes 6–10 bits of width on the late ticks.
 
+## Can a different walk rule thin the tail? (rule search, 2026-10-26)
+
+The model now takes the decision rule as parameters (`LF_RULE`, `LF_EMAX`, `LF_M`/`LF_K`, `LF_LADD`/`LF_HUP`,
+`LF_E8EVERY`), in both the park-only mode (`--park`, ~1M walks/s) and the full walk with widths. Sanity check: the
+parameterised rule with the leader's settings reproduces the leader's counts exactly.
+
+**Ticks needed per leg** (park only, 2·10⁷ walks, seed 13; the 10⁻⁶ column rests on ~20 walks, so ±1 tick):
+
+| Variant | 10⁻⁴ | 10⁻⁵ | 10⁻⁶ |
+|---|---|---|---|
+| Leader: windows, e ≤ 7, ≤1 e≥4 per same-rail triple | 124 | 127 | 129 |
+| A: compare window 4 bits higher (L+4, top+4) | 124 | 126 | 128 |
+| Exact \|T\| > 2\|B\| compare (leader records) | 124 | 126 | 127 |
+| B: A + ≤2 events per 7 same-rail ticks | 123 | 125 | 127 |
+| e ≤ 15 (leader records) | 122 | 124 | 126 |
+| B + e ≤ 11 | 122 | 123 | 125 |
+| Exact compare + free records + e ≤ 15 | 121 | 123 | 124 |
+| e ≤ 15 only on every 3rd / 6th / 12th tick | 123 / 123 / 124 | 125 / 126 / 127 | |
+
+**Walk cost at 10⁻⁵ after refitting each variant's own width table** ([`refit.py`](../research/lf_tail/refit.py),
+union bound over ticks, 2·10⁷ full walks, seed 31). The union bound overstates absolute cost: for the leader at
+10⁻⁴ it gives +25.5k T, the exactly calibrated table ([`calibrate.py`](../research/lf_tail/calibrate.py)) +20.8k T,
+the record-based greedy +17.6k T. So read the column as a ranking:
+
+| Variant | Walk cost (ticks + width) | What the variant itself costs |
+|---|---|---|
+| Leader rule | +41.9k | 0 |
+| A | +36.7k | ~4 more compare bits per tick ≈ 2 T × 4 × 122 × 4 traversals ≈ 3.9k |
+| B | +31.2k | A, plus records 5 bits/7 ticks vs 2/3 (≈ +6 Q ≈ 3.6k T) and a non-positional code to decode |
+| e ≤ 15 | +19.2k | a 4th payload rotation stage: `rot8` is 508 Fredkins on 256 wires for 3 stages, so ≈ 256 T × 122 ticks × 4 traversals ≈ 120k |
+| B + e ≤ 11 | +17.1k | same payload stage, ≈ 120k |
+| Exact compare | +8.7k | a full-width magnitude compare per tick, roughly 100k |
+
+**Result.**
+- **What drives the tail.** The tail comes from the barrel cap e ≤ 7. When the deep choice needs v > 8, the walk falls back to the flat ×½ step and loses about 7 bits. The record constraint (one e ≥ 4 per triple) comes second. Compare-window precision barely matters, because the window already sits at the anchor.
+- **Cheap knobs net to ≈ 0.** The A and B knobs save 5–11k T of walk cost but cost about the same to implement.
+- **Removing the real driver costs more than it saves.** The drivers that matter (e ≤ 15, exact compare) cost an order of magnitude more than they save, because every tick pays for them, both legs, forward and reverse. Restricting e ≥ 8 to a subset of ticks loses the gain about as fast as it saves the stage.
+- **Conclusion.** No rule variant found here lowers the cost of exactness materially below the ≈ +43k T (5.8%) of the leader rule. The tail is intrinsic to an e ≤ 7 leapfrog.
+- **Side finding.** For a typical walk the fitted width table sits 30–50 bits above what the walk needs. The table, like the tick count, is sized for the rare slow walks.
+
 ## hddivsteps: checked, not prototyped
 
 - **Bound reproduced from data:** sipa's precomputed hull tables (`half_delta_output.txt`) give **591** iterations for all 0 ≤ g ≤ f ≤ p (plain divsteps: 725). External code was not executed; only the published table was read.
