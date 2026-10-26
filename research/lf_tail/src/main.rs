@@ -212,10 +212,127 @@ fn emax() -> usize { static V: std::sync::OnceLock<usize> = std::sync::OnceLock:
 fn grp() -> (usize, usize) { static V: std::sync::OnceLock<(usize, usize)> = std::sync::OnceLock::new(); *V.get_or_init(|| (envu("LF_M", 0), envu("LF_K", 1))) }
 fn envc(k: &'static str, d: usize) -> usize {
     static V: std::sync::OnceLock<std::collections::HashMap<&'static str, usize>> = std::sync::OnceLock::new();
-    *V.get_or_init(|| ["LF_LADD", "LF_HUP", "LF_E8EVERY", "LF_E8OFF"].iter().map(|&k| (k, envu(k, 0))).collect()).get(k).unwrap_or(&d)
+    *V.get_or_init(|| ["LF_LADD", "LF_HUP", "LF_E8EVERY", "LF_E8OFF", "LF_WSLACK", "LF_NOW"].iter().map(|&k| (k, envu(k, 0))).collect()).get(k).unwrap_or(&d)
 }
 fn recmin() -> i32 { static V: std::sync::OnceLock<i32> = std::sync::OnceLock::new(); *V.get_or_init(|| std::env::var("LF_RECMIN").ok().and_then(|v| v.parse().ok()).unwrap_or(1)) }
 fn famon() -> bool { static V: std::sync::OnceLock<usize> = std::sync::OnceLock::new(); *V.get_or_init(|| envu("LF_FAM", 1)) == 1 }
+
+/// Leader-rule walk returning per tick (rail widths w0 + w1 at tick start, letter index): the letter is the forced
+/// signs (2 bits), the choice and the shift e (deep: v - 1, flat: 0) -> index s0 + 2 s1 + 4 deep + 8 e.
+fn letters(d: &I5, anch: &[usize], r: usize) -> Vec<(u16, u8)> {
+    let pp = p();
+    let r0 = if d.0[0] & 1 == 1 { *d } else { d.sub(&pp) };
+    let x = if r0.bit(1) { r0.add(&pp) } else { r0.sub(&pp) };
+    let mut rr = [r0, x.sar(1)];
+    let fam = |m: u32| -> bool { let r0 = m & 0x15; let r1 = m & 0x2a; r0.count_ones() <= 1 && r1.count_ones() <= 1 };
+    let mut pfx: u32 = 0;
+    let mut out = Vec::with_capacity(r);
+    for t in 0..r {
+        let a = t & 1;
+        let last = t == r - 1;
+        let nf = if last { 0 } else { 2 };
+        let b = rr[1 - a];
+        let mut tk = rr[a];
+        let ww = (rr[0].width() + rr[1].width()) as u16;
+        let (mut added, mut flipped) = (false, false);
+        let mut sg = 0u8;
+        let bn = b.neg_p();
+        for i in 0..nf {
+            let s = tk.bit(1) == b.bit(1);
+            sg |= (s as u8) << i;
+            let xx = if s { tk.add(&b) } else { tk.sub(&b) };
+            let tn = tk.neg_p();
+            let ad = tn == (bn ^ !s);
+            let tnew = xx.sar(1);
+            let fl = !ad && tnew.neg_p() != tn;
+            if i == nf - 1 { added = ad; flipped = fl; }
+            tk = tnew;
+        }
+        let sd = tk.bit(1) != b.bit(1);
+        let (xd, xf) = if sd { (tk.add(&b), tk.sub(&b)) } else { (tk.sub(&b), tk.add(&b)) };
+        let z = xd.is_zero();
+        let v = if z { 99 } else { xd.ctz() };
+        let e_eq = !z && (tk.neg_p() == (bn ^ !sd));
+        if t % 6 == 0 { pfx = 0; }
+        let mut cap = if t == 0 || last { 3 } else { 7 };
+        if cap > 3 && !fam(pfx | 1 << (t % 6)) { cap = 3; }
+        let l = lwin(t);
+        let h = anch[t.min(anch.len() - 1)].saturating_sub(l - 2);
+        let (wa, wb) = (tk.winv(h, l), b.winv(h, l));
+        let mut deep = false;
+        if v <= cap + 1 {
+            deep = if last { if !(e_eq && v == 2) { true } else { wa > (wb << 2) } } else if t == 0 { !(e_eq && v == 2) } else if !e_eq { true } else {
+                match v { 2 => wa > (wb << 1) || flipped, 3 => wa > (wb << 1) || !added, _ => true }
+            };
+        }
+        if deep && v - 1 >= 4 { pfx |= 1 << (t % 6); }
+        let e = if deep { v - 1 } else { 0 };
+        out.push((ww, sg + 4 * deep as u8 + 8 * e as u8));
+        rr[a] = if deep { xd.sar(v as u32) } else { xf.sar(1) };
+    }
+    out
+}
+
+/// One forward tick of the leader rule on the target rail (not the last tick): (new target, letter, new pfx).
+fn tick_fwd(t: usize, tk0: I5, b: I5, pfx: u32, anch: &[usize]) -> (I5, u8, u32) {
+    let fam = |m: u32| -> bool { let r0 = m & 0x15; let r1 = m & 0x2a; r0.count_ones() <= 1 && r1.count_ones() <= 1 };
+    let mut tk = tk0;
+    let (mut added, mut flipped) = (false, false);
+    let mut sg = 0u8;
+    let bn = b.neg_p();
+    for i in 0..2 {
+        let s = tk.bit(1) == b.bit(1);
+        sg |= (s as u8) << i;
+        let xx = if s { tk.add(&b) } else { tk.sub(&b) };
+        let tn = tk.neg_p();
+        let ad = tn == (bn ^ !s);
+        let tnew = xx.sar(1);
+        let fl = !ad && tnew.neg_p() != tn;
+        if i == 1 { added = ad; flipped = fl; }
+        tk = tnew;
+    }
+    let sd = tk.bit(1) != b.bit(1);
+    let (xd, xf) = if sd { (tk.add(&b), tk.sub(&b)) } else { (tk.sub(&b), tk.add(&b)) };
+    let z = xd.is_zero();
+    let v = if z { 99 } else { xd.ctz() };
+    let e_eq = !z && (tk.neg_p() == (bn ^ !sd));
+    let pf = if t % 6 == 0 { 0 } else { pfx };
+    let mut cap = if t == 0 { 3 } else { 7 };
+    if cap > 3 && !fam(pf | 1 << (t % 6)) { cap = 3; }
+    let l = lwin(t);
+    let h = anch[t.min(anch.len() - 1)].saturating_sub(l - 2);
+    let (wa, wb) = (tk.winv(h, l), b.winv(h, l));
+    let mut deep = false;
+    if v <= cap + 1 {
+        deep = if t == 0 { !(e_eq && v == 2) } else if !e_eq { true } else {
+            match v { 2 => wa > (wb << 1) || flipped, 3 => wa > (wb << 1) || !added, _ => true }
+        };
+    }
+    let npf = if deep && v - 1 >= 4 { pf | 1 << (t % 6) } else { pf };
+    let e = if deep { v - 1 } else { 0 };
+    (if deep { xd.sar(v as u32) } else { xf.sar(1) }, sg + 4 * deep as u8 + 8 * e as u8, npf)
+}
+
+/// Number of (pre-target, letter) pairs that tick t maps onto the same post-target (source and pfx given).
+fn preimages(t: usize, post: I5, b: I5, pfx: u32, anch: &[usize], wmax: usize) -> usize {
+    let mut seen: Vec<I5> = Vec::new();
+    for sh in 1..=8u32 {
+        // the pre-choice value tk2 satisfies tk2 -+ b = post << sh
+        let x = { let mut v = post; for _ in 0..sh { v = v.add(&v); } v };
+        for c in [x.add(&b), x.sub(&b)] {
+            for s1 in [false, true] {
+                let tk1 = { let d2 = c.add(&c); if s1 { d2.sub(&b) } else { d2.add(&b) } };
+                for s0 in [false, true] {
+                    let tk0 = { let d2 = tk1.add(&tk1); if s0 { d2.sub(&b) } else { d2.add(&b) } };
+                    if tk0.0[0] & 1 == 0 || tk0.width() > wmax || seen.contains(&tk0) { continue; }
+                    let (nt, _, _) = tick_fwd(t, tk0, b, pfx, anch);
+                    if nt == post { seen.push(tk0); }
+                }
+            }
+        }
+    }
+    seen.len()
+}
 
 fn splitmix(s: &mut u64) -> u64 { *s = s.wrapping_add(0x9E37_79B9_7F4A_7C15); let mut z = *s; z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9); z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB); z ^ (z >> 31) }
 fn rnd_d(s: &mut u64) -> I5 {
@@ -266,6 +383,77 @@ fn main() {
             }
             println!("{} | ref: {} | t0deep: {} | t0flat: {} | park_tick={}", h, out[0], out[1], out[2], park_tick(&d, &anch, 200));
         }
+        return;
+    }
+    if args.iter().any(|a| a == "--branch") {
+        // per tick: how many pre-states give the same post-state -> bits the tape needs at that tick
+        let mut sum_bits = vec![0f64; r - 1];
+        let mut maxc = vec![0usize; r - 1];
+        let mut hist = vec![0u64; 64];
+        let mut s = seed;
+        let mut tot = 0f64;
+        for _ in 0..n {
+            let d = rnd_d(&mut s);
+            let pp = p();
+            let r0 = if d.0[0] & 1 == 1 { d } else { d.sub(&pp) };
+            let x = if r0.bit(1) { r0.add(&pp) } else { r0.sub(&pp) };
+            let mut rr = [r0, x.sar(1)];
+            let mut pfx = 0u32;
+            for t in 0..r - 1 {
+                let a = t & 1;
+                let (nt, _, npf) = tick_fwd(t, rr[a], rr[1 - a], pfx, &anch);
+                let wm = (tab[t][0] as i64 + envc("LF_WSLACK", 0) as i64 - 8) as usize;
+                let wm = wm.max(rr[a].width()); // a walk over the table keeps its own width
+                let k = preimages(t, nt, rr[1 - a], pfx, &anch, if envc("LF_NOW", 0) == 1 { 999 } else { wm });
+                assert!(k >= 1);
+                sum_bits[t] += (k as f64).log2();
+                tot += (k as f64).log2();
+                maxc[t] = maxc[t].max(k);
+                hist[k.min(63)] += 1;
+                rr[a] = nt;
+                pfx = npf;
+            }
+        }
+        let fixed: f64 = maxc.iter().map(|&k| (k as f64).log2().ceil()).sum();
+        println!("walks {n}: mean sum log2(preimages) {:.1} bits; fixed-length per tick (ceil log2 max) {fixed:.0} bits", tot / n as f64);
+        println!("preimage count histogram {:?}", hist.iter().enumerate().filter(|(_, &c)| c > 0).collect::<Vec<_>>());
+        println!("max per tick (first 12, last 6): {:?} .. {:?}", &maxc[..12], &maxc[r - 7..]);
+        return;
+    }
+    if args.iter().any(|a| a == "--info") {
+        // pass 1: per-tick letter distribution; pass 2 (fresh walks): per tick, histograms of the rail widths
+        // w0 + w1 and of w0 + w1 + ideal code length of the letters so far (static per-tick model, -log2 p)
+        let walks: Vec<Vec<(u16, u8)>> = { let mut s = seed; (0..n).map(|_| letters(&rnd_d(&mut s), &anch, r)).collect() };
+        let mut cnt = vec![[0u64; 128]; r];
+        for w in &walks { for (t, &(_, l)) in w.iter().enumerate() { cnt[t][l as usize] += 1; } }
+        let cl: Vec<Vec<f64>> = cnt.iter().map(|c| c.iter().map(|&k| if k == 0 { 99.0 } else { -((k as f64) / n as f64).log2() }).collect()).collect();
+        let fixed: Vec<f64> = cnt.iter().map(|c| (c.iter().filter(|&&k| k > 0).count() as f64).log2().ceil()).collect();
+        let ent: Vec<f64> = cnt.iter().map(|c| c.iter().filter(|&&k| k > 0).map(|&k| { let q = k as f64 / n as f64; -q * q.log2() }).sum()).collect();
+        let mut s2 = seed ^ 0xDEAD_BEEF;
+        let m = n;
+        let mut wv = vec![Vec::with_capacity(m as usize); r];
+        let mut jv = vec![Vec::with_capacity(m as usize); r];
+        for _ in 0..m {
+            let w = letters(&rnd_d(&mut s2), &anch, r);
+            let mut acc = 0.0;
+            for (t, &(ww, l)) in w.iter().enumerate() {
+                wv[t].push(ww as f64);
+                jv[t].push(ww as f64 + acc);
+                acc += cl[t][l as usize].min(16.0);
+            }
+        }
+        println!("tick fixed_tape_bits_so_far entropy_so_far | rails q50 q1e-4 | rails+ideal_tape q50 q1e-4");
+        let (mut fx, mut en) = (0.0, 0.0);
+        for t in 0..r {
+            for v in [&mut wv[t], &mut jv[t]] { v.sort_by(|a, b| a.partial_cmp(b).unwrap()); }
+            let q = |v: &Vec<f64>, f: f64| v[((v.len() as f64 - 1.0) * f) as usize];
+            if t % 10 == 0 || t == r - 1 {
+                println!("{t} {fx:.0} {en:.1} | {:.0} {:.0} | {:.1} {:.1}", q(&wv[t], 0.5), q(&wv[t], 1.0 - 1e-4), q(&jv[t], 0.5), q(&jv[t], 1.0 - 1e-4));
+            }
+            fx += fixed[t];
+            en += ent[t];
+        }
+        println!("total fixed {fx:.0} entropy {en:.1}");
         return;
     }
     if args.iter().any(|a| a == "--park") {
