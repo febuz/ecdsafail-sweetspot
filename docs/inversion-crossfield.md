@@ -66,3 +66,20 @@ A structural jump would need an inversion primitive outside these classes: a GCD
 | all 266 kept | 38.5M | 68,924 | 2,651B | 2,896× |
 
 **Verdict.** Squaring is indeed the cheapest single operation: 34k T against 350k for a division walk. But a division replaces ~266 sequential squarings, and the pebbling those need costs another factor of ~7. Division-free inversion is ~1,000× worse in score. Quarter-squares multiplication (ab = ((a+b)² − (a−b)²)/4) has no target here either: outside the walks the point add has only one product, and that is already a square.
+
+## Tested: hardcoded tables, literature 2024–2026, rail pooling (2026-10-26)
+
+- **Hardcoded constants.** The leader already uses them wherever an operand is a build-time constant:
+  - halve and square tables (`constant_data/`);
+  - 2^−e fold tables (`fold_data/`, 520 KB);
+  - included gate-sequence blobs;
+  - the fitted walk schedule.
+
+  A table indexed by quantum data costs about one Toffoli per entry. One tick's letters depend on ~10 low bits of each rail plus a 22-bit window per rail, giving at least 2²⁰ (and really 2⁶⁴) entries against ~5–30 T of decision logic today. A table of known inverses is hit with probability 2^(k−256).
+- **Literature.**
+  - Litinski 2024 (controlled add-subtract, n−1 Toffoli): the walk steps are already sign-controlled add/subtract.
+  - Karatsuba squaring: `square.rs` already uses it.
+  - Khattar–Gidney conditionally clean ancillae: comparators ≈ 3n Toffoli, no gain over the window compares.
+  - Published point adds are all 2–3× worse in score: arXiv 2606.02235, 1,192 Q × 2^21.19 T; Theta 893 Q × 2.22M T ≈ 1.98B; Long et al. ≈ 1.92B.
+  - The best qubit-for-Toffoli trade (Theta's Lilypad-GCD) works out to ≈ 4,300 T per qubit, against ≈ 600 for break-even.
+- **Rail pooling** (both rails in one bit pool instead of 2 × W): the 10⁻⁴ quantile of w0 + w1 sits only 4–8 bits under 2W on every tick, so there is too little slack to pay for a moving boundary.

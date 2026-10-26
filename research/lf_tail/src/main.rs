@@ -448,7 +448,7 @@ fn main() {
             for v in [&mut wv[t], &mut jv[t]] { v.sort_by(|a, b| a.partial_cmp(b).unwrap()); }
             let q = |v: &Vec<f64>, f: f64| v[((v.len() as f64 - 1.0) * f) as usize];
             if t % 10 == 0 || t == r - 1 {
-                println!("{t} {fx:.0} {en:.1} | {:.0} {:.0} | {:.1} {:.1}", q(&wv[t], 0.5), q(&wv[t], 1.0 - 1e-4), q(&jv[t], 0.5), q(&jv[t], 1.0 - 1e-4));
+                println!("{t} {fx:.0} {en:.1} | {:.0} {:.0} | {:.1} {:.1} | 2W {}", q(&wv[t], 0.5), q(&wv[t], 1.0 - 1e-4), q(&jv[t], 0.5), q(&jv[t], 1.0 - 1e-4), 2 * tab[t][0]);
             }
             fx += fixed[t];
             en += ent[t];
