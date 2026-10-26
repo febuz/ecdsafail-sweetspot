@@ -51,3 +51,18 @@ Every per-walk constant measured sits at the floor of its local model:
 What remains is non-local: the transcript's pin to p, and the T-for-Q trade, which is flat.
 
 A structural jump would need an inversion primitive outside these classes: a GCD with genuinely fewer than ~1.3 n-bit adds per bit of progress while staying comparison-free, or a payload that is not a full-width mod-p register. None was found in the literature (Roetteler 2017, Häner 2020, Long et al. 2026: 1.356M T × 1,419 Q ≈ 1.92B, worse than the leader).
+
+## Tested: inversion without division, using squarings only (Fermat), 2026-10-26
+
+[`research/squaring_only/fermat_pebble.py`](../research/squaring_only/fermat_pebble.py) computes a⁻¹ = a^(p−2) with ~253 squarings and 13 multiplications, made reversible by optimal pebbling (Knill recursion). Costs are calibrated on the leader: modular square-and-subtract 34.1k T, multiply ≈ 2× that.
+
+**Why pebbling is unavoidable.** Squaring mod p is 2-to-1, so every intermediate power must be kept or recomputed. k pebbles reach a line of at most 2^k − 1 steps without exponential blow-up, so at least 9 extra 256-qubit registers are needed. That is already above the 1,234 cap before anything else.
+
+| Pebbles k | T per point add | Peak Q | Score | vs leader |
+|---|---|---|---|---|
+| 6 | 916M | 2,364 | 2,165B | 2,366× |
+| 9 | 392M | 3,132 | 1,228B | 1,341× |
+| 11 (best) | 264M | 3,644 | 961B | 1,050× |
+| all 266 kept | 38.5M | 68,924 | 2,651B | 2,896× |
+
+**Verdict.** Squaring is indeed the cheapest single operation: 34k T against 350k for a division walk. But a division replaces ~266 sequential squarings, and the pebbling those need costs another factor of ~7. Division-free inversion is ~1,000× worse in score. Quarter-squares multiplication (ab = ((a+b)² − (a−b)²)/4) has no target here either: outside the walks the point add has only one product, and that is already a square.
