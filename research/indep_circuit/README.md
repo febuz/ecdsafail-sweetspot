@@ -1,6 +1,6 @@
 # DivPay: an independent secp256k1 point-add circuit
 
-This is our own circuit for the ecdsa.fail challenge. It is built from textbook parts plus techniques from non-leader work, and uses no leader constructs. Source: [`src/point_add/`](src/point_add/), a drop-in replacement for the harness's editable directory. The next steps are in [`PLAN_next_steps.md`](PLAN_next_steps.md). The detailed backlog with acceptance criteria, including the research items, is in [`BACKLOG.md`](BACKLOG.md).
+This is our own circuit for the ecdsa.fail challenge. It is built from textbook parts plus techniques from non-leader work, and uses no leader constructs. Source: [`src/point_add/`](src/point_add/), a drop-in replacement for the harness's editable directory. The next steps are in [`PLAN_next_steps.md`](PLAN_next_steps.md). The detailed backlog with acceptance criteria, including the research items, is in [`BACKLOG.md`](BACKLOG.md). A paper design down to ~850k Toffoli is in [`THEORETICAL_850k.md`](THEORETICAL_850k.md).
 
 No op streams (`ops.bin`, 1–2 GB each) or other large generated files are in this repo. Every number below can be regenerated with the commands under "How to run".
 
