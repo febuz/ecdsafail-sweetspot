@@ -41,3 +41,8 @@ Code is in [`research/novel/`](../research/novel/).
 **Weighting caveats.**
 - The weighting sheet is a *suitability* ranking. With most T-effects at 0, maturity, simplicity and gate-set compatibility decide the order, so the top ranks are elementary primitives, not levers.
 - Gower novelty barely discriminates: 14 mostly binary features, and the unused inversion methods all land near the same neighbour.
+
+
+## Built circuit
+
+The DivPay circuit itself, with measured official results, the backlog and how to run it, is in [`research/indep_circuit/`](../research/indep_circuit/README.md).
