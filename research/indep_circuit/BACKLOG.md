@@ -227,6 +227,27 @@ Code: [`src/point_add/`](src/point_add/). Design and history: [README.md](README
 - **Question:** can measurement-based ghosts (Kornerup–Sadun–Soloveichik, Quantum 2025) replace part of the tape or the checkpoints of a linear walk at lower T than Bennett? The rails at a checkpoint are wide early and narrow late.
 - **Acceptance:** a cost table (T, Q) for 1, 2 and 4 checkpoint levels, using the measured rail-width profile (`rail_w.rs`) and tape rates (divsteps and Euclid).
 
+### R16: Payload at ≤ 2n per radix-4 iteration
+- **Question:** can the payload update a −= d·b·4^k (d ∈ {−2..2}) run as one carry-save or fused carry chain per iteration, with operand select inline and a Solinas fold only every 4 iterations?
+- **Acceptance:**
+  - A bit-level Python reference of the payload recurrence in the redundant range, with the fold schedule, on 1M inputs: 0 wrong inverses, range never exceeded.
+  - A per-iteration Toffoli count from a builder-level prototype of one iteration (unit test) ≤ 2n.
+
+### R17: Swap-free Euclid step boundaries (key item for ~830k T)
+- **Question:** is there a Euclid / continued-fraction formulation where the role change at a step end costs ≤ 100 T per iteration? Today it is ~900 T: a conditional swap of rails (w) and payload (n) plus a realignment. Candidates:
+  - roles fixed by iteration parity, with quotient digit 0 allowed as padding;
+  - a "both-directions" update with a role bit folded into the sign of the digit;
+  - a nearest-integer variant whose signed digits make the swap a sign change.
+- **Acceptance:**
+  - The formulation proven to compute d⁻¹ (argument plus a Python reference on 1M inputs).
+  - The shared-register peak re-measured with its own tape coding (≤ 540).
+  - The iteration count re-measured (≤ 260).
+  - The boundary cost priced ≤ 100 T per iteration.
+
+### R18: Reversible near-entropy coding of quotients
+- **Question:** a block enumerative or arithmetic code for radix-4 digits and step ends that reaches the measured floor (shared peak ≤ 530 worst case), with encode and decode ≤ 30 T per iteration.
+- **Acceptance:** the code's worst-case length on 1M inputs and a builder-level prototype of encode/decode for one block (unit test, round trip).
+
 ## Milestone targets
 
 | Milestone | After | Target (estimate) | Check |
@@ -235,6 +256,7 @@ Code: [`src/point_add/`](src/point_add/). Design and history: [README.md](README
 | M2 | I3–I5 | ≤ 4.9B, Q ≤ 1,670 | official eval |
 | M3 | I6 (if go) | ≤ 4.5B, Q ≤ 1,470 | official eval |
 | M4 | R1/R8 decision | below Google low-gate 2.99B | user decision before implementation |
+| M6 | R16–R18 done | paper design E or F (≈ 0.74–0.83M T at ≈ 1,050 Q) confirmed with priced prototypes | R16–R18 acceptance |
 | M5 | R11 go | division ≤ 1.2M T at ≤ 1,150 Q (paper), then a bit-level Python reference | R11 acceptance |
 
 The figures are estimates from the per-step anatomy in README.md. Each milestone replaces them by measured numbers.
