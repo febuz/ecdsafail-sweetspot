@@ -1,4 +1,4 @@
-# Theoretical DivPay-X at ~850k Toffoli
+# Theoretical DivPay-X at ~850k Toffoli (and a speculative 1,050-qubit variant)
 
 This is a paper design. Nothing below the "today" row is built or tested. The calculator is [`theory_850k.py`](theory_850k.py), which states every assumption and its status:
 - **M**: measured in this repo;
@@ -41,3 +41,41 @@ Model calibration: the "today" row gives 2.76M T, against ~2.88M estimated from 
 - **The two biggest levers (rows 2 and 3) are the core ideas of the leader's walk.** The leader's real circuit is at 742k T. A theoretical 850k design therefore lands in the same family; independently derived, but not structurally different.
 - **The qubits stay ~1,450–1,770 in this model.** At 850k T the score is ~1.4B: below Google (2.99B and 3.17B), above the leader (0.915B).
 - **Realistic without speculative levers** (rows 1, 6 and the textbook part of 8): ~2.8M T, 4.5–4.8B.
+
+---
+
+# Speculative qubit levers down to ~1,050 Q
+
+Calculator: [`theory_1050q.py`](theory_1050q.py). It starts from row 9 above (848,591 T, 1,671 Q). The peak sits at the end of the forward walk:
+
+| Item | Qubits |
+|---|---|
+| Tape | 813 |
+| Payload pair | 560 |
+| Carries | 258 |
+| Rest | 40 |
+
+Statuses: **T** textbook, **S** speculative, **S!** needs a new result.
+
+| Step | Lever (status) | T | Q | Score |
+|---|---|---|---|---|
+| 9 | 850k paper design | 0.85M | 1,671 | 1.42B |
+| Q1 | chunked carries, blocks of 32 (T) | 0.91M | 1,453 | 1.32B |
+| Q2 | payload guard bits 24 → 6 (S: range proof for the deferred correction) | 0.91M | 1,417 | 1.28B |
+| Q3 | block arithmetic coding of the tick letters, ~2.3 bits/tick (S: letter entropy still to be measured) | 0.94M | 1,306 | **1.23B** |
+| Q4 | transposed integer cofactors built in the reverse pass, with no payload during the forward walk; end: exact 2-adic erase of m11 and an in-place product y·m12·2^−K (S) | 1.82M | 1,108 | 2.02B |
+| Q5 | in-place end product with one extra register, borrowing rail wires dirty (S!) | 1.82M | 1,058 | 1.93B |
+| **Q6** | **carry blocks of 24, fewer loose ancillas (T/S)** | **1.83M** | **1,042** | **1.91B** |
+
+## How the 1,050-qubit path works
+1. **The payload pair leaves the walk peak (Q4).**
+   - The forward walk only writes the tape.
+   - During the reverse rails pass, which consumes the tape, the row vector e₁ᵀ·M_S⋯M₁ is built as integers in reverse step order. It grows as the tape shrinks, so the two share the room.
+   - At the end, the inverse is y·m12·2^−K mod p, with the constant 2^−K known classically.
+2. **The cost is an in-place modular multiplication at the end** (compute z = y·u, erase y with z·d·2^−K): about +0.9M T per point add. Q5 additionally needs an in-place product with one extra register (S!), otherwise the end phase peaks at ~1,108.
+3. **The tape is compressed below the fixed-length code (Q3),** and the carries are chunked (Q1, Q6).
+
+## Assessment
+- **Below 1,050 qubits is reachable on paper,** at ~1.83M T. The score is ~1.9B.
+- **The score is best at ~1,300 qubits, not at 1,050** (Q3: 1.23B). Going from 1,306 to 1,042 qubits roughly doubles T, at about 3,400 T per qubit saved. That matches the trade of real low-qubit circuits (Theta: 893 Q × 2.22M T = 1.98B).
+- **Q4 and Q5 carry the most risk.** Q4 is an algorithmic change to the payload. Q5 needs a new result: an in-place modular product with O(1) extra registers. Both belong in the backlog as research items before any code.
