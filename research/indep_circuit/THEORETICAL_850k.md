@@ -75,7 +75,42 @@ Statuses: **T** textbook, **S** speculative, **S!** needs a new result.
 2. **The cost is an in-place modular multiplication at the end** (compute z = y·u, erase y with z·d·2^−K): about +0.9M T per point add. Q5 additionally needs an in-place product with one extra register (S!), otherwise the end phase peaks at ~1,108.
 3. **The tape is compressed below the fixed-length code (Q3),** and the carries are chunked (Q1, Q6).
 
+## Correction (2026-10-27)
+- **Q4 is under-priced.** After the end product, the integer cofactor u (and m11) is garbage. Erasing it needs u recomputed from d, which is one more walk (forward rails with tape, then the reverse pass that un-builds the row vector). That adds ≈ +0.3M T per division.
+- **Lazy Montgomery products** (bit-serial, z < 2p kept without per-bit reduction, about 2n + 40 T per bit) bring the end products from ~230k to ~141k each.
+- **Corrected Q4–Q6 path:** ≈ 2.0–2.3M T at ~1,042 Q, which is 2.1–2.4B.
+- **The earlier claim "the best score is at ~1,300 qubits" is withdrawn.** It only held for the levers in this table, and the next section shows a lever that changes the low-qubit picture.
+
+## New measurement: Proos–Zalka register sharing with a Euclid walk (R11)
+`research/shared_register.py` and `research/quotient_bits.py`, 20,000 random inputs. For each walk family, the peak of bits(f) + bits(g) + tape written so far, when rails and tape share one register:
+
+| Walk | Shared rails + tape peak (mean) | q99.99 | Max | Steps or iterations |
+|---|---|---|---|---|
+| Classic Euclid, Elias-gamma quotients | **526** | 547 | **550** | 150 steps (max 185); bit-serial: **354 iterations max** (mean 337) |
+| Nearest-integer Euclid | 649 | 687 | 691 | 105 steps |
+| Divsteps, ideal ternary (log₂ 3) | 850 | 850 | 850 | 535 |
+| Divsteps, 3 trits in 5 bits (today) | 894 | 894 | 894 | 535 |
+
+**Classic Euclid is information-tight: about 2n.** With rails and tape in one shared register (~550 bits), the forward payload pair (512) and ~70 workspace, the division peaks at ≈ **1,130 Q**. That is without an end product and without an extra walk; the output lands on y as today.
+
+**Cost** (estimate, bit-serial Euclid, 354 iterations per inversion). Per iteration:
+- compare: a window of ~40, or full w;
+- conditional subtract on the rails: ~w;
+- conditional shift of the shared register and the divisor alignment: ~550 Fredkins;
+- payload a −= b·2^k: halving (n + 40) plus a conditional modular subtract (2n + 80), ≈ 890.
+
+So about 0.32M T per rails pass (×2) plus 0.31M T payload, ≈ 0.95M T per division, ≈ **2.05M T per point add at ~1,130 Q (≈ 2.3B)**, before any of the speculative T levers. Several of the 850k levers (deferred correction, merged add and fold, chunked carries) apply here too.
+
+## Low-qubit options compared (paper estimates)
+
+| Path | T | Q | Score | Main open question |
+|---|---|---|---|---|
+| Q3 (forward divsteps, block-coded letters) | 0.94M | 1,306 | 1.23B | letter entropy ≤ 2.3 b/tick (R3) |
+| Bit-serial Euclid with Proos–Zalka sharing | ~2.05M | ~1,130 | ~2.3B | cheap data-dependent shift of the shared register; window compare exactness |
+| Same + speculative T levers (deferred correction, merged add and fold, lazy payload) | ~1.3–1.5M (S) | ~1,100 | ~1.5B (S) | all of the above |
+| Same + workspace on dirty borrowed wires (Häner 2016) | ~1.5–1.7M (S) | ~1,060 | ~1.7B (S) | dirty-ancilla adders cost 2–4× T |
+| Transposed integer cofactors (Q4–Q6, corrected) | 2.0–2.3M | 1,042 | 2.1–2.4B | in-place end product (S!), extra walk |
+
 ## Assessment
-- **Below 1,050 qubits is reachable on paper,** at ~1.83M T. The score is ~1.9B.
-- **The score is best at ~1,300 qubits, not at 1,050** (Q3: 1.23B). Going from 1,306 to 1,042 qubits roughly doubles T, at about 3,400 T per qubit saved. That matches the trade of real low-qubit circuits (Theta: 893 Q × 2.22M T = 1.98B).
-- **Q4 and Q5 carry the most risk.** Q4 is an algorithmic change to the payload. Q5 needs a new result: an in-place modular product with O(1) extra registers. Both belong in the backlog as research items before any code.
+- **No path has been shown to give the lowest score at ~1,300 qubits.** The Euclid sharing path puts ~1,100 Q within reach at a T that is not yet pinned down (1.3–2.05M). Measured so far: the information-tight register (550 bits max).
+- **For ~1,050 Q, the most promising route** is bit-serial Euclid with register sharing and a forward payload, plus low-workspace (dirty or conditionally clean) adders. The open item is the T cost of the data-dependent register shift. See BACKLOG R11–R15.

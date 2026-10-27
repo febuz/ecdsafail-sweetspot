@@ -196,6 +196,37 @@ Code: [`src/point_add/`](src/point_add/). Design and history: [README.md](README
 
 ---
 
+### R11: Bit-serial Euclid with Proos–Zalka register sharing (low-qubit path)
+- **Known so far:**
+  - `research/shared_register.py`: rails + Elias-gamma tape in one register peak at 526 bits mean and 550 max over 20k inputs; divsteps needs 850–894.
+  - `research/quotient_bits.py`: 354 bit-serial iterations max, 337 mean.
+- **Tasks:**
+  1. Run 1M inputs for the tail of both numbers (seeds as in `steps_tail.py`).
+  2. Design the shared register: rails at the top, tape growing from the bottom, with a data-dependent boundary.
+  3. Price the per-iteration shift (Fredkin chain) against an alternative: a fixed-slot tape with an iteration counter, where each iteration writes one quotient bit into a slot given by a counter (quantum-addressed write, priced by unary iteration).
+  4. Price the payload update a −= q·b, done bit-serially from the most significant bit with b·2^k obtained by halving.
+- **Acceptance:**
+  - Tail numbers on 1M inputs.
+  - A per-iteration cost table (T, Q) for both register designs.
+  - A paper estimate of the division T and peak Q; go if the estimate is ≤ 1.2M T at ≤ 1,150 Q.
+  - A Python bit-level reference of the shared-register walk that reproduces d⁻¹ on 1M inputs.
+
+### R12: Information-tight binary variants
+- **Question:** is there a binary-GCD rule (compare-based Stein, plus-minus Bojanczyk–Brent, Stehlé–Zimmermann binary recursive) whose local letter information per bit of rail shrink is ≤ 1.05? Divsteps is 1.67; Euclid with Elias-gamma is ≈ 1.03 (526/512).
+- **Acceptance:** shared-register peak per variant with `shared_register.py`-style accounting on 100k inputs, plus the local preimage count as in `lf_tail --branch`.
+
+### R13: Lazy Montgomery products
+- **Question:** a bit-serial product z ← (z + u_i·y + c·p)/2 kept in [0, 2p) without per-bit reduction, at about 2n + 40 T per bit. The parity flag is erased by a window compare.
+- **Acceptance:** a unit test of z = y·u·2⁻²⁵⁶ mod p on 64 random shots, with T counted against double-and-add (~3n + 120 per bit).
+
+### R14: Low-workspace adders
+- **Question:** dirty-ancilla adders and incrementers (Häner, Roetteler, Svore 2016; Gidney 2015) that borrow idle registers, for example the payload register not being written, or d in the end phase. Also conditionally clean ancillae (Khattar–Gidney 2025) for comparators.
+- **Acceptance:** the T cost per n-bit add and the number of clean ancillas, measured in unit tests with random dirty contents; a priced Q saving at the division peak.
+
+### R15: Spooky pebbling of the walk
+- **Question:** can measurement-based ghosts (Kornerup–Sadun–Soloveichik, Quantum 2025) replace part of the tape or the checkpoints of a linear walk at lower T than Bennett? The rails at a checkpoint are wide early and narrow late.
+- **Acceptance:** a cost table (T, Q) for 1, 2 and 4 checkpoint levels, using the measured rail-width profile (`rail_w.rs`) and tape rates (divsteps and Euclid).
+
 ## Milestone targets
 
 | Milestone | After | Target (estimate) | Check |
@@ -204,5 +235,6 @@ Code: [`src/point_add/`](src/point_add/). Design and history: [README.md](README
 | M2 | I3–I5 | ≤ 4.9B, Q ≤ 1,670 | official eval |
 | M3 | I6 (if go) | ≤ 4.5B, Q ≤ 1,470 | official eval |
 | M4 | R1/R8 decision | below Google low-gate 2.99B | user decision before implementation |
+| M5 | R11 go | division ≤ 1.2M T at ≤ 1,150 Q (paper), then a bit-level Python reference | R11 acceptance |
 
 The figures are estimates from the per-step anatomy in README.md. Each milestone replaces them by measured numbers.
