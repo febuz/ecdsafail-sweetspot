@@ -50,6 +50,12 @@ Statuses:
 - Payload: ~2.25n plus a dirty penalty per iteration with deferred correction.
 - Square ~75k (backlog R10) and coordinates ~4k.
 
+## Update from the R16–R18 harness (rnd/, laptop runs)
+- **Radix-4 iterations are 283 at the maximum** (mean 259), not 240. At equal per-iteration cost, design E becomes ≈ 0.95M T and F ≈ 0.84M T.
+- **Codes must work at quotient level.** Elias-gamma on quotients gives a shared peak of 544; coding per radix-4 digit gives ~900.
+- **Removing swaps by fixed role parity doubles the iterations.** R17 needs a different formulation.
+- **Lazy payload reduction costs only +5 bits** with a fold every 16 iterations.
+
 ## Assessment
 - **1,050 qubits close on paper** with measured inputs (524 + 512 + 14). It needs near-entropy coding (S) and dirty-borrowed workspace (S).
 - **~830k T needs one new result (S!):** a Euclid formulation without conditional swaps at the step boundaries. Design F (~740k) needs a second one: payload ≤ 2n per iteration.

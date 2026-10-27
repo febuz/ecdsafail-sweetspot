@@ -1,0 +1,155 @@
+{
+ "C0_classic_bitserial": {
+  "iterations": {
+   "max": 353,
+   "mean": 337.454,
+   "min": 321,
+   "q99_99": 353
+  },
+  "n": 2000,
+  "ok": {
+   "false": 0,
+   "true": 2000
+  },
+  "padding": {
+   "max": 0,
+   "mean": 0.0,
+   "min": 0,
+   "q99_99": 0
+  },
+  "seconds": 0.1,
+  "seed": 1,
+  "shared_peak": {
+   "max": 536.0,
+   "mean": 514.88,
+   "min": 498.0,
+   "q99_99": 536.0
+  },
+  "shift_events": {
+   "max": 181,
+   "mean": 149.167,
+   "min": 121,
+   "q99_99": 181
+  },
+  "shift_max": {
+   "max": 18,
+   "mean": 9.101,
+   "min": 5,
+   "q99_99": 18
+  },
+  "swaps": {
+   "max": 182,
+   "mean": 150.167,
+   "min": 122,
+   "q99_99": 182
+  },
+  "tape_bits": {
+   "max": 531.0,
+   "mean": 487.622,
+   "min": 446.0,
+   "q99_99": 531.0
+  }
+ },
+ "C1_radix4_nearest": {
+  "iterations": {
+   "max": 283,
+   "mean": 259.45,
+   "min": 230,
+   "q99_99": 283
+  },
+  "n": 2000,
+  "ok": {
+   "false": 0,
+   "true": 2000
+  },
+  "padding": {
+   "max": 0,
+   "mean": 0.0,
+   "min": 0,
+   "q99_99": 0
+  },
+  "seconds": 0.2,
+  "seed": 1,
+  "shared_peak": {
+   "max": 901.78,
+   "mean": 813.03,
+   "min": 709.04,
+   "q99_99": 901.78
+  },
+  "shift_events": {
+   "max": 122,
+   "mean": 103.802,
+   "min": 85,
+   "q99_99": 122
+  },
+  "shift_max": {
+   "max": 10,
+   "mean": 5.556,
+   "min": 4,
+   "q99_99": 10
+  },
+  "swaps": {
+   "max": 123,
+   "mean": 104.802,
+   "min": 86,
+   "q99_99": 123
+  },
+  "tape_bits": {
+   "max": 900.78,
+   "mean": 812.028,
+   "min": 708.04,
+   "q99_99": 900.78
+  }
+ },
+ "C2_radix4_parity_roles": {
+  "iterations": {
+   "max": 565,
+   "mean": 517.9,
+   "min": 459,
+   "q99_99": 565
+  },
+  "n": 2000,
+  "ok": {
+   "false": 0,
+   "true": 2000
+  },
+  "padding": {
+   "max": 282,
+   "mean": 258.45,
+   "min": 229,
+   "q99_99": 282
+  },
+  "seconds": 0.2,
+  "seed": 1,
+  "shared_peak": {
+   "max": 1554.89,
+   "mean": 1413.131,
+   "min": 1240.76,
+   "q99_99": 1554.89
+  },
+  "shift_events": {
+   "max": 122,
+   "mean": 103.802,
+   "min": 85,
+   "q99_99": 122
+  },
+  "shift_max": {
+   "max": 10,
+   "mean": 5.556,
+   "min": 4,
+   "q99_99": 10
+  },
+  "swaps": {
+   "max": 0,
+   "mean": 0.0,
+   "min": 0,
+   "q99_99": 0
+  },
+  "tape_bits": {
+   "max": 1553.89,
+   "mean": 1412.131,
+   "min": 1239.76,
+   "q99_99": 1553.89
+  }
+ }
+}
